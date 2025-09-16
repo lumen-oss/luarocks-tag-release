@@ -28,6 +28,6 @@ jobs:
     - uses: cachix/install-nix-action@v30
     - uses: cachix/cachix-action@v16
       with:
-        name: neorocks
+        name: lumen-labs
         authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
     - run: nix build --accept-flake-config "${{matrix.attribute}}" -L
