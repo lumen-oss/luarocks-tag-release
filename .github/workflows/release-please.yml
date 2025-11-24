@@ -19,7 +19,7 @@ jobs:
       with:
         token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
         release-type: simple
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: auto-merge
       uses: reitermarkus/automerge@v2
       with:
