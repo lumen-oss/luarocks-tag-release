@@ -3,6 +3,8 @@ name: "Tests and checks"
 on:
   pull_request:
   push:
+    branches:
+      - main
 jobs:
   checks:
     runs-on: ubuntu-latest
