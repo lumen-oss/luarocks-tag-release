@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Release
-      uses: googleapis/release-please-action@v4
+      uses: googleapis/release-please-action@v5
       with:
         token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
         release-type: simple
