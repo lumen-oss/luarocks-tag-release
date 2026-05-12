@@ -2,6 +2,41 @@
 
 # Changelog
 
+## [4.0.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v3.0.0...v4.0.0) (2026-05-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* drop support for running tests in favour of nvim-busted-action ([#437](https://github.com/lumen-oss/luarocks-tag-release/issues/437))
+* deprecate `test_interpreters` and disable tests by default
+
+### Features
+
+* add `specrev` input ([#407](https://github.com/lumen-oss/luarocks-tag-release/issues/407)) ([f6d8fb5](https://github.com/lumen-oss/luarocks-tag-release/commit/f6d8fb5297a1bcf902cb81c53812ab05110c642c))
+* add build backends to release action ([41f04b5](https://github.com/lumen-oss/luarocks-tag-release/commit/41f04b5bb45e34a8cc871ea49bb3cca07c7d3da1))
+* deprecate `test_interpreters` and disable tests by default ([906f4b5](https://github.com/lumen-oss/luarocks-tag-release/commit/906f4b54130766a3f2691b9cb5a910c39da6a40a))
+* do not fail on already existing rocks, add `fail_on_duplicate` flag ([#411](https://github.com/lumen-oss/luarocks-tag-release/issues/411)) ([07c35cf](https://github.com/lumen-oss/luarocks-tag-release/commit/07c35cf0c2a1346dc9484c74a250f1e0c48dede8))
+* drop support for running tests in favour of nvim-busted-action ([#437](https://github.com/lumen-oss/luarocks-tag-release/issues/437)) ([2af6c3a](https://github.com/lumen-oss/luarocks-tag-release/commit/2af6c3a00772ee42a161d02a8d324ab53b24bb13))
+* **neovim:** support `lsp` runtime directory ([#643](https://github.com/lumen-oss/luarocks-tag-release/issues/643)) ([da4e090](https://github.com/lumen-oss/luarocks-tag-release/commit/da4e090accd58917793aa7116c825d7ea7590754))
+* set up luarocks path before test install ([#597](https://github.com/lumen-oss/luarocks-tag-release/issues/597)) ([7bc0a20](https://github.com/lumen-oss/luarocks-tag-release/commit/7bc0a20c425da1ba577a4ff6b2c56c81e2feb4ca))
+
+
+### Bug Fixes
+
+* add --local lua_interpreter luarocks config ([eaece88](https://github.com/lumen-oss/luarocks-tag-release/commit/eaece884f51711ca69fbc47b18b8223b961f7589))
+* add `--local` flag for test runs ([76057a2](https://github.com/lumen-oss/luarocks-tag-release/commit/76057a2ad04a43444c9c5b885251e3b15e7c6dec))
+* add `--tree .` to `luarocks init` before running tests ([a5ef7e6](https://github.com/lumen-oss/luarocks-tag-release/commit/a5ef7e6400396b4d6858ed788db08ddfb9c2330c))
+* add `ftdetect` to `{{ neovim.plugin.dirs }}`. ([#431](https://github.com/lumen-oss/luarocks-tag-release/issues/431)) ([9ae4c23](https://github.com/lumen-oss/luarocks-tag-release/commit/9ae4c23abc6b08b14c0d456d7c85d718d61f3d90))
+* don't propagate busted ([8d3bb48](https://github.com/lumen-oss/luarocks-tag-release/commit/8d3bb48e456a2227d34ac3e6f0212bb97a86cab9))
+* lua_interpreter -&gt; variables.LUA ([9f80ab8](https://github.com/lumen-oss/luarocks-tag-release/commit/9f80ab80229effed03116c5a2219e98e0106b072))
+* remove busted from propagatedBuildInputs ([0b7b24f](https://github.com/lumen-oss/luarocks-tag-release/commit/0b7b24f8feab1928e77c7d07ea1570311ff5f904))
+* remove luarocks build backends ([#440](https://github.com/lumen-oss/luarocks-tag-release/issues/440)) ([78dd246](https://github.com/lumen-oss/luarocks-tag-release/commit/78dd24621e61cc569bd028349313fe4ece2ab953))
+
+
+### Reverts
+
+* add `--local` flag for test runs ([b75ae1d](https://github.com/lumen-oss/luarocks-tag-release/commit/b75ae1d796ba28ee0079dd3a8dd0db85e1b79e3c))
+
 ## [3.0.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v2.0.0...v3.0.0) (2026-05-10)
 
 
