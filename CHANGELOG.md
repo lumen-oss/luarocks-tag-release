@@ -2,6 +2,20 @@
 
 # Changelog
 
+## [7.1.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v7.0.0...v7.1.0) (2026-05-16)
+
+
+### Features
+
+* add build backends to release action ([41f04b5](https://github.com/lumen-oss/luarocks-tag-release/commit/41f04b5bb45e34a8cc871ea49bb3cca07c7d3da1))
+* **neovim:** support `lsp` runtime directory ([#643](https://github.com/lumen-oss/luarocks-tag-release/issues/643)) ([da4e090](https://github.com/lumen-oss/luarocks-tag-release/commit/da4e090accd58917793aa7116c825d7ea7590754))
+* set up luarocks path before test install ([#597](https://github.com/lumen-oss/luarocks-tag-release/issues/597)) ([7bc0a20](https://github.com/lumen-oss/luarocks-tag-release/commit/7bc0a20c425da1ba577a4ff6b2c56c81e2feb4ca))
+
+
+### Bug Fixes
+
+* remove luarocks build backends ([#440](https://github.com/lumen-oss/luarocks-tag-release/issues/440)) ([78dd246](https://github.com/lumen-oss/luarocks-tag-release/commit/78dd24621e61cc569bd028349313fe4ece2ab953))
+
 ## [7.0.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v6.0.0...v7.0.0) (2026-05-15)
 
 
