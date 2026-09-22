@@ -227,6 +227,73 @@ Example:
     template: "/path/to/my/template.rockspec"
 ```
 
+#### Using an scm rockspec as the template
+
+You can keep a single `<package>-scm-1.rockspec` in your repository's root
+and use it both as your development rockspec and as the release template,
+by pointing `template` at it and using the reserved `$is_release` variable to
+branch between the two modes:
+
+```yaml
+- name: LuaRocks Upload
+  uses: nvim-neorocks/luarocks-tag-release@v7
+  with:
+    template: "./mypackage-scm-1.rockspec"
+```
+
+```lua
+local git_ref = '$git_ref'
+local modrev = '$modrev'
+local is_release = '$is_release' == 'true'
+
+local repo_url = 'https://github.com/owner/mypackage'
+
+rockspec_format = '3.0'
+package = 'mypackage'
+
+dependencies = {
+  'lua >= 5.1',
+}
+
+build = {
+  type = 'builtin',
+  copy_directories = { 'lua' },
+}
+
+if is_release then
+  version = modrev .. '-' .. '$specrev'
+  source = {
+    url = repo_url .. '/archive/' .. git_ref .. '.zip',
+    dir = 'mypackage-' .. git_ref,
+  }
+else
+  version = 'scm-1'
+  source = {
+    url = repo_url:gsub('https', 'git'),
+  }
+end
+```
+
+When the action processes the template, `$is_release` is replaced with `true`
+for a tagged release and `false` for an `scm`/`dev` publish (i.e. whenever
+`version` is unset, `scm` or `dev`).
+When the file is loaded directly as an scm rockspec
+(e.g. `luarocks install mypackage-scm-1.rockspec`), the literal
+`'$is_release' == 'true'` is valid Lua and evaluates to `false`, so the scm
+branch is taken instead.
+
+> [!IMPORTANT]
+>
+> Only the `$is_release`, `$git_ref`, `$modrev`, `$specrev`, `$repo_name`
+> placeholders are safe inside a dual-purpose scm rockspec, and only in the
+> `is_release` branch (or a top-level `local` whose value is consumed there).
+> Everything consumed in the scm branch or at the top level (`package`,
+> `repo_url`, `dependencies`, `build`, etc.) must be hardcoded.
+> The code-valued placeholders (`$dependencies`, `$test_dependencies`, `$labels`,
+> `$detailed_description`, `$license`, `$copy_directories`) are a syntax error
+> when left unreplaced, and a string placeholder such as `package = '$package'`
+> would leak the literal `$package` into the scm rockspec.
+
 ### `license` (optional)
 
 The license used by this package.

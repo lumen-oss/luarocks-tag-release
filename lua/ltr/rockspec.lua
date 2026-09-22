@@ -103,7 +103,10 @@ function Rockspec.generate(package_name, modrev, specrev, rockspec_template, met
     table.insert(meta.dependencies, 1, 'lua >= 5.1')
   end
 
+  local is_release = modrev ~= 'scm' and modrev ~= 'dev'
+
   local rockspec = rockspec_template
+    :gsub('$is_release', tostring(is_release))
     :gsub('$git_ref', meta.git_ref)
     :gsub('$modrev', modrev)
     :gsub('$specrev', specrev)
