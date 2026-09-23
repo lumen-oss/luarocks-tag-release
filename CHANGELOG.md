@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [7.3.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v7.2.0...v7.3.0) (2026-09-23)
+
+
+### Features
+
+* support using scm rockspecs as templates ([#991](https://github.com/lumen-oss/luarocks-tag-release/issues/991)) ([d445df9](https://github.com/lumen-oss/luarocks-tag-release/commit/d445df9cbce7f502c4fb30a41c18592d0ac96c4c))
+
 ## [7.2.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v7.1.0...v7.2.0) (2026-05-17)
 
 
