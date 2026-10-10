@@ -36,7 +36,7 @@
         ];
       };
 
-      base-dependencies = with pkgs.lua51Packages; [
+      base-dependencies = with pkgs.lua55Packages; [
         dkjson
         luafilesystem
       ];

@@ -2,7 +2,7 @@
 with final.pkgs;
 with final.lib;
 with final.stdenv; let
-  luarocks-tag-release-action-wrapped = pkgs.lua51Packages.buildLuaApplication {
+  luarocks-tag-release-action-wrapped = pkgs.lua55Packages.buildLuaApplication {
     pname = "luarocks-tag-release";
     version = "scm-1";
 
@@ -12,7 +12,7 @@ with final.stdenv; let
       curl
     ];
 
-    propagatedBuildInputs = with pkgs.lua51Packages; [
+    propagatedBuildInputs = with pkgs.lua55Packages; [
       dkjson
       luafilesystem
     ];
@@ -33,7 +33,7 @@ with final.stdenv; let
       luarocks-tag-release-action-wrapped
       unzip
       zip
-      (lua5_1.withPackages (luaPkgs:
+      (lua5_5.withPackages (luaPkgs:
         with luaPkgs; [
           luarocks
           luafilesystem
