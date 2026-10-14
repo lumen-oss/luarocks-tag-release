@@ -31,6 +31,16 @@ function OS.write_file(filename, content)
   outfile:close()
 end
 
+---@param ok number|boolean|nil
+---@param code number|nil
+---@return number
+local function normalize_exit_code(ok, code)
+  if type(ok) == 'number' then
+    return ok
+  end
+  return ok and 0 or (code or 1)
+end
+
 ---@param cmd string
 ---@param on_failure fun(error_msg:string)?
 ---@param verbose boolean|nil If true, will print stdout and stderr
@@ -41,7 +51,8 @@ function OS.execute(cmd, on_failure, verbose)
   local exec_out = 'exec_out.txt'
   local exec_err = 'exec_err.txt'
   local to_exec_out = ' >' .. exec_out .. ' 2>' .. exec_err
-  local exit_code = os.execute(cmd .. to_exec_out)
+  local ok, _, code = os.execute(cmd .. to_exec_out)
+  local exit_code = normalize_exit_code(ok, code)
   local stdout = OS.read_file(exec_out) or ''
   local stderr = OS.read_file(exec_err) or ''
   if exit_code ~= 0 then

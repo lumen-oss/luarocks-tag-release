@@ -16,7 +16,6 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev
       - name: Luarocks Upload
         uses: ./
         env:
@@ -24,7 +23,7 @@ jobs:
         with:
           dependencies: |
             dkjson
-            lua-curl
+            luafilesystem
           labels: |
             neovim
           summary: "Luarocks release workflow for GitHub"
@@ -34,5 +33,3 @@ jobs:
           copy_directories: |
             {{ neovim.plugin.dirs }}
             bin
-          extra_luarocks_args: |
-            CURL_INCDIR=/usr/include/x86_64-linux-gnu

@@ -26,6 +26,10 @@
 [![Issues][issues-shield]][issues-url]
 [![Luarocks release][ci-shield]][ci-url]
 
+> [!TIP]
+>
+> We recommend switching to [gh-actions-lux](https://github.com/lumen-oss/gh-actions-lux/).
+
 Publishes packages to [LuaRocks](https://luarocks.org/) when a git tag is pushed.
 No need to add a rockspec to your repository for each release (or at all).
 
@@ -73,14 +77,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: LuaRocks Upload
-        uses: nvim-neorocks/luarocks-tag-release@v7
+        uses: nvim-neorocks/luarocks-tag-release@v8
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
 ```
 
 > [!NOTE]
 >
-> Use the `v7` tag to keep up with the latest releases, without breaking changes.
+> Use the `v8` tag to keep up with the latest releases, without breaking changes.
 
 ## Inputs
 
@@ -101,7 +105,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     dependencies: |
       plenary.nvim
@@ -117,7 +121,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     test_dependencies: |
       luaunit
@@ -132,7 +136,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     labels: |
       neovim
@@ -148,7 +152,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     copy_directories: |
       {{ neovim.plugin.dirs }}
@@ -203,7 +207,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     detailed_description: |
       Publishes packages to LuaRocks when a git tag is pushed.
@@ -222,7 +226,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     template: "/path/to/my/template.rockspec"
 ```
@@ -236,7 +240,7 @@ branch between the two modes:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     template: "./mypackage-scm-1.rockspec"
 ```
@@ -304,7 +308,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     license: "MIT"
 ```
@@ -353,7 +357,7 @@ jobs:
       - name: Get new commits
         run: echo "NEW_COMMIT_COUNT=$(git log --oneline --since '24 hours ago' | wc -l)" >> $GITHUB_ENV
       - name: LuaRocks Upload
-        uses: nvim-neorocks/luarocks-tag-release@v7
+        uses: nvim-neorocks/luarocks-tag-release@v8
         if: ${{ env.NEW_COMMIT_COUNT > 0 }}
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
@@ -382,7 +386,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     version: "scm"
     # Add logic or determining if the specrev needs to be incremented
@@ -398,7 +402,8 @@ instead (e.g. running tests).
 ### `extra_luarocks_args`
 
 Extra args to pass to the luarocks command.
-This is useful if luarocks cannot find headers needed for the installation.
+This is useful if luarocks cannot find headers needed for the installation
+or if you need to set the Lua version to build for before uploading.
 
 Example:
 
@@ -406,10 +411,10 @@ Example:
 - run: |
     sudo apt-get install -y libcurl4-openssl-dev
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v7
+  uses: nvim-neorocks/luarocks-tag-release@v8
   with:
     extra_luarocks_args: |
-      CURL_INCDIR=/usr/include/x86_64-linux-gnu
+      --lua-version 5.4 CURL_INCDIR=/usr/include/x86_64-linux-gnu
 ```
 
 > [!TIP]
