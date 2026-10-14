@@ -2,6 +2,17 @@
 
 # Changelog
 
+## [8.0.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v7.3.0...v8.0.0) (2026-10-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* use Lua 5.5 runtime ([#1009](https://github.com/lumen-oss/luarocks-tag-release/issues/1009))
+
+### Features
+
+* use Lua 5.5 runtime ([#1009](https://github.com/lumen-oss/luarocks-tag-release/issues/1009)) ([413b4c8](https://github.com/lumen-oss/luarocks-tag-release/commit/413b4c8c9ca35d311ab37842b935d1617eb3b979))
+
 ## [7.3.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v7.2.0...v7.3.0) (2026-09-23)
 
 
