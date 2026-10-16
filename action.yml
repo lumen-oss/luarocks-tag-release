@@ -79,6 +79,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Install Lua
+      uses: luarocks/gh-actions-lua@v14
+      with:
+        luaVersion: "5.1"
+
     - name: Install lux
       uses: lumen-oss/gh-actions-lux@v1
       with:
