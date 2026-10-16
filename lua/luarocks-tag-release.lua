@@ -112,23 +112,37 @@ local function upload(args, extra_lux_args)
 end
 
 ---@param package_name string
----@param modrev string
+---@param version string|nil
+---@return string
+local function package_requirement(package_name, version)
+  if version and version:match('^%d') then
+    return package_name .. '@' .. version
+  end
+  return package_name
+end
+
+---@param package_name string
+---@param version string|nil
 ---@param args Args
 ---@param extra_lux_args string
-local function test_install_package(package_name, modrev, args, extra_lux_args)
+local function test_install_package(package_name, version, args, extra_lux_args)
   local tmp_dir = mk_tmp_tree(args)
-  local cmd = Lux.install(tmp_dir, package_name .. '@' .. modrev, extra_lux_args)
+  local cmd = Lux.install(tmp_dir, package_requirement(package_name, version), extra_lux_args)
   print('TEST: ' .. cmd)
   print(OS.execute(cmd, print, args.is_debug))
 end
 
----@param package_name string
 ---@param package_version string|nil
----@return string package_name
----@return string modrev
-local function normalize(package_name, package_version)
-  local modrev = package_version and package_version ~= 'dev' and string.gsub(package_version, 'v', '') or 'scm'
-  return package_name:lower(), modrev
+---@return string|nil version
+local function version_override(package_version)
+  if not package_version or package_version == '' then
+    return nil
+  end
+  local modrev = package_version:gsub('^v', '')
+  if modrev == 'scm' or modrev == 'dev' or modrev:match('^%d') then
+    return modrev
+  end
+  return nil
 end
 
 ---@param args Args
@@ -148,9 +162,11 @@ end
 
 ---@param release ResolvedRelease
 ---@param args Args
+---@param version string|nil
 ---@return ProjectMeta
-local function project_meta(release, args)
+local function project_meta(release, args, version)
   return {
+    version = version,
     lua_version = Project.lua_version(args.dependencies),
     summary = release.summary,
     detailed_description_lines = args.detailed_description_lines,
@@ -166,14 +182,15 @@ end
 ---@param package_version string|nil The version of the LuaRocks package.
 ---@param args Args
 local function luarocks_tag_release(package_name, package_version, args)
-  local name, modrev = normalize(package_name, package_version)
+  package_name = package_name:lower()
+  local version = version_override(package_version)
   local extra_lux_args =
     Lux.with_verbose(Lux.combine_args(args.extra_luarocks_args, args.extra_lux_args), args.is_debug)
   local release = resolve_meta(args)
 
-  print('Generating Lux release ' .. modrev .. ' for: ' .. name .. ' from ref ' .. args.git_ref .. '.')
+  print('Generating Lux release for: ' .. package_name .. ' from ref ' .. args.git_ref .. '.')
 
-  local project = Project.for_release(name, project_meta(release, args), '.')
+  local project = Project.for_release(package_name, project_meta(release, args, version), '.')
   if project.generated then
     write_generated_project(project)
     add_project_dependencies(args, extra_lux_args)
@@ -182,11 +199,11 @@ local function luarocks_tag_release(package_name, package_version, args)
   write_custom_template(project.directory, args)
 
   local rockspec_path = parse_rockspec_path(run_generate_rockspec(args, extra_lux_args))
-  test_install_rockspec(name, rockspec_path, args, extra_lux_args)
+  test_install_rockspec(package_name, rockspec_path, args, extra_lux_args)
 
   if args.upload then
     upload(args, extra_lux_args)
-    test_install_package(name, modrev, args, extra_lux_args)
+    test_install_package(package_name, version, args, extra_lux_args)
   else
     print('Lux upload disabled. Skipping...')
   end

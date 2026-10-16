@@ -251,13 +251,26 @@ Example:
 >
 > ![about](https://user-images.githubusercontent.com/12857160/218101570-b0605716-0457-47c1-ab2e-91d48a48881c.png)
 
-### `version` (deprecated)
+### `version` (optional)
 
-The package version is derived by [lux](https://lux.lumen-labs.org/) from the git tag
+The version to publish (without the rockspec revision).
+
+By default, [lux](https://lux.lumen-labs.org/) derives the version from the git tag
 (a leading `v` is stripped). If there is no SemVer tag, a `dev` version is published.
 
-This input is retained for backward compatibility, but no longer overrides the published version.
+Set this input to publish a specific version, for example from a scheduled workflow
+that has no tags. Setting it to `"scm"` or `"dev"` publishes a dev release.
+
 The `specrev` input has been removed; lux manages the rockspec revision automatically.
+
+Example:
+
+```yaml
+- name: LuaRocks Upload
+  uses: nvim-neorocks/luarocks-tag-release@v8
+  with:
+    version: "0.0.123"
+```
 
 ### `fail_on_duplicate` (optional)
 

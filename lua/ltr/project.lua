@@ -57,6 +57,7 @@ function Project.runtime_dependencies(dependencies)
 end
 
 ---@class (exact) ProjectMeta
+---@field version? string The package version (optional; lux derives it when absent).
 ---@field lua_version string The Lua version constraint.
 ---@field summary string Package summary.
 ---@field detailed_description_lines string[] Detailed description (list of lines).
@@ -72,13 +73,14 @@ end
 ---@param meta ProjectMeta
 ---@return string lux_toml
 function Project.generate(package_name, meta)
-  local lines = {
-    'package = ' .. toml_string(package_name),
-    'lua = ' .. toml_string(meta.lua_version),
-    '',
-    '[description]',
-    'summary = ' .. toml_string(meta.summary),
-  }
+  local lines = { 'package = ' .. toml_string(package_name) }
+  if meta.version then
+    lines[#lines + 1] = 'version = ' .. toml_string(meta.version)
+  end
+  lines[#lines + 1] = 'lua = ' .. toml_string(meta.lua_version)
+  lines[#lines + 1] = ''
+  lines[#lines + 1] = '[description]'
+  lines[#lines + 1] = 'summary = ' .. toml_string(meta.summary)
   if #meta.detailed_description_lines > 0 then
     lines[#lines + 1] = 'detailed = ' .. toml_string(table.concat(meta.detailed_description_lines, '\n'))
   end

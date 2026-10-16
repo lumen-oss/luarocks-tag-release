@@ -99,6 +99,21 @@ type = "builtin"
     assert.is_truthy(lux_toml:find('summary = "A \\"quoted\\" summary"', 1, true))
   end)
 
+  it('Includes an explicit version when provided', function()
+    local lux_toml = Project.generate('my-package', {
+      version = '0.0.123',
+      lua_version = '>= 5.1',
+      summary = 'A package',
+      detailed_description_lines = {},
+      labels = {},
+      license = nil,
+      homepage = nil,
+      repo_url = 'https://github.com/owner/my-package',
+      copy_directories = {},
+    })
+    assert.is_truthy(lux_toml:find('version = "0.0.123"', 1, true))
+  end)
+
   describe('for_release', function()
     local OS = require('ltr.os')
     local real_file_exists
