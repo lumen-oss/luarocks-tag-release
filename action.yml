@@ -57,8 +57,11 @@ inputs:
     required: false
   extra_luarocks_args:
     description: |
-      Extra args to pass to the luarocks command.
-      For example: "CURL_DIR=/usr/include/x86_64-linux-gnu/"
+      Deprecated: extra args to pass to the luarocks command.
+      Mapped to lux flags (e.g. `KEY=VALUE` becomes `--variables KEY=VALUE`).
+    required: false
+  extra_lux_args:
+    description: "Extra args to pass to the lux command."
     required: false
   fail_on_duplicate:
     description: |
@@ -86,6 +89,7 @@ runs:
         INPUT_TEMPLATE: ${{ inputs.template }}
         INPUT_LICENSE: ${{ inputs.license }}
         INPUT_EXTRA_LUAROCKS_ARGS: ${{ inputs.extra_luarocks_args }}
+        INPUT_EXTRA_LUX_ARGS: ${{ inputs.extra_lux_args }}
         INPUT_FAIL_ON_DUPLICATE: ${{ inputs.fail_on_duplicate }}
         RUNNER_DEBUG: ${{ runner.debug }}
       shell: bash

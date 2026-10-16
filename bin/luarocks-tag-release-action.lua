@@ -61,12 +61,21 @@ local args = {
   license = license_input ~= '' and license_input or nil,
   template = template_input ~= '' and template_input or nil,
   extra_luarocks_args = Parser.parse_list_args(getenv_or_empty('INPUT_EXTRA_LUAROCKS_ARGS')),
+  extra_lux_args = Parser.parse_list_args(getenv_or_empty('INPUT_EXTRA_LUX_ARGS')),
   github_event_path = getenv_or_err('GITHUB_EVENT_PATH'),
   ref_type = os.getenv('GITHUB_REF_TYPE_OVERRIDE') or getenv_or_err('GITHUB_REF_TYPE'),
   git_ref = os.getenv('GITHUB_REF_NAME_OVERRIDE') or getenv_or_err('GITHUB_REF_NAME'),
   is_debug = os.getenv('RUNNER_DEBUG') == '1',
   fail_on_duplicate = getenv_or_empty('INPUT_FAIL_ON_DUPLICATE') == 'true',
 }
+
+local function warn_deprecated_extra_luarocks_args(parsed_args)
+  if #parsed_args.extra_luarocks_args > 0 then
+    print('::warning::extra_luarocks_args is deprecated; please use extra_lux_args instead.')
+  end
+end
+
+warn_deprecated_extra_luarocks_args(args)
 
 local function get_github_sha()
   return os.getenv('GITHUB_SHA_OVERRIDE') or getenv_or_err('GITHUB_SHA')

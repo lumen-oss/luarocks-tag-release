@@ -58,6 +58,37 @@ describe('Lux', function()
     assert.are.same('lx --no-luarc generate-rockspec --output-format json', Lux.generate_rockspec())
   end)
 
+  it('Injects options into tree commands', function()
+    assert.are.same(
+      'lx --lua-version 5.4 --tree /tmp/tree install-rockspec foo.rockspec',
+      Lux.install_rockspec('/tmp/tree', 'foo.rockspec', '--lua-version 5.4')
+    )
+  end)
+
+  it('Injects options into add commands', function()
+    assert.are.same('lx --no-luarc --preset nvim add "foo"', Lux.add('foo', '--preset nvim'))
+  end)
+
+  it('Maps legacy KEY=VALUE args to --variables', function()
+    assert.are.same(
+      { '--variables', 'CURL_INCDIR=/usr/include', '--lua-version', '5.4' },
+      Lux.map_extra_args { 'CURL_INCDIR=/usr/include', '--lua-version', '5.4' }
+    )
+  end)
+
+  it('Combines legacy and lux args', function()
+    assert.are.same(
+      '--variables CURL_INCDIR=/x --preset nvim',
+      Lux.combine_args({ 'CURL_INCDIR=/x' }, { '--preset', 'nvim' })
+    )
+  end)
+
+  it('Appends the verbose flag when debugging', function()
+    assert.are.same('--verbose', Lux.with_verbose('', true))
+    assert.are.same('--preset nvim --verbose', Lux.with_verbose('--preset nvim', true))
+    assert.are.same('--preset nvim', Lux.with_verbose('--preset nvim', false))
+  end)
+
   describe('api key environment', function()
     local real_getenv
     before_each(function()
