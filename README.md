@@ -104,8 +104,11 @@ Any dependencies specified here must be available on LuaRocks.
 > [!NOTE]
 >
 > lux requires an explicit version requirement for each dependency.
-> Bare names (e.g. `plenary.nvim`) are resolved by lux to the latest version at publish time
+> Bare names (e.g. `plenary.nvim`) are resolved by lux to the latest version at publish time.
 > This may change in the future (see [lux#2011](https://github.com/lumen-oss/lux/issues/2011)).
+>
+> A `lua` entry (e.g. `lua >= 5.4`) sets the published Lua version constraint
+> and is not added as a dependency.
 
 Example:
 
@@ -309,8 +312,10 @@ See the [Example configurations wiki page](https://github.com/nvim-neorocks/luar
 - This workflow only works on public repositories.
 - It was designed with Neovim plugins in mind. It should work with any LuaRocks package
   (lua >= 5.1), but this has not been tested.
-- The default Lua version constraint is `>= 5.1`.
-  Use `extra_lux_args: --lua-version <version>` to build for a different Lua version.
+- The published Lua version constraint defaults to `>= 5.1`.
+  To change it, add a `lua` entry to the `dependencies` input (e.g. `lua >= 5.4`).
+- To build/install with a specific Lua version, pass `extra_lux_args: --lua-version <version>`
+  (lux otherwise detects or installs a suitable Lua).
 
 ## Related
 
