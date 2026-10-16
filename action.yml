@@ -70,10 +70,10 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: cachix/install-nix-action@v30
-    - run: |
-        nix profile install --quiet --accept-flake-config "${{ github.action_path }}#luarocks-tag-release-action"
-      shell: bash
+    - name: Install lux
+      uses: lumen-oss/gh-actions-lux@v1
+      with:
+        version: "0.47.0"
 
     - run: luarocks-tag-release-action
       env:
