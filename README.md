@@ -311,7 +311,6 @@ See the [Example configurations wiki page](https://github.com/nvim-neorocks/luar
   (lua >= 5.1), but this has not been tested.
 - The default Lua version constraint is `>= 5.1`.
   Use `extra_lux_args: --lua-version <version>` to build for a different Lua version.
-- `test_dependencies` are not included in the generated rockspec by lux.
 
 ## Related
 

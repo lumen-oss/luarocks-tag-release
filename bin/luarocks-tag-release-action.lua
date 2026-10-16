@@ -75,7 +75,14 @@ local function warn_deprecated_extra_luarocks_args(parsed_args)
   end
 end
 
+local function warn_deprecated_test_dependencies(parsed_args)
+  if #parsed_args.test_dependencies > 0 then
+    print('::warning::test_dependencies is deprecated and is no longer published to the rockspec.')
+  end
+end
+
 warn_deprecated_extra_luarocks_args(args)
+warn_deprecated_test_dependencies(args)
 
 local function get_github_sha()
   return os.getenv('GITHUB_SHA_OVERRIDE') or getenv_or_err('GITHUB_SHA')
