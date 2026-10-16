@@ -57,4 +57,35 @@ describe('Lux', function()
   it('Generates a generate-rockspec command', function()
     assert.are.same('lx --no-luarc generate-rockspec --output-format json', Lux.generate_rockspec())
   end)
+
+  describe('api key environment', function()
+    local real_getenv
+    before_each(function()
+      real_getenv = os.getenv
+    end)
+    after_each(function()
+      os.getenv = real_getenv
+    end)
+
+    it('Adds no prefix when LUX_API_KEY is set', function()
+      os.getenv = function(name)
+        return name == 'LUX_API_KEY' and 'lux-key' or nil
+      end
+      assert.are.same('', Lux.api_key_env())
+    end)
+
+    it('Maps the deprecated LUAROCKS_API_KEY', function()
+      os.getenv = function(name)
+        return name == 'LUAROCKS_API_KEY' and 'legacy-key' or nil
+      end
+      assert.are.same('env LUX_API_KEY="$LUAROCKS_API_KEY" ', Lux.api_key_env())
+    end)
+
+    it('Adds no prefix when no key is set', function()
+      os.getenv = function()
+        return nil
+      end
+      assert.are.same('', Lux.api_key_env())
+    end)
+  end)
 end)

@@ -1,4 +1,17 @@
-assert(os.getenv('LUAROCKS_API_KEY'), 'LUAROCKS_API_KEY secret not set')
+local function assert_api_key_present()
+  if not os.getenv('LUX_API_KEY') and not os.getenv('LUAROCKS_API_KEY') then
+    error('LUX_API_KEY secret not set.')
+  end
+end
+
+local function warn_deprecated_api_key()
+  if not os.getenv('LUX_API_KEY') then
+    print('::warning::LUAROCKS_API_KEY is deprecated; please use LUX_API_KEY instead.')
+  end
+end
+
+assert_api_key_present()
+warn_deprecated_api_key()
 
 local Parser = require('ltr.parser')
 local OS = require('ltr.os')

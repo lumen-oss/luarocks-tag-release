@@ -89,7 +89,7 @@ end
 
 ---@param args Args
 local function upload(args)
-  local cmd = Lux.upload(Lux.sign_protocol_from_env())
+  local cmd = Lux.api_key_env() .. Lux.upload(Lux.sign_protocol_from_env())
   print('UPLOAD: ' .. cmd)
   print(OS.execute(cmd, on_upload_error(args), args.is_debug))
 end

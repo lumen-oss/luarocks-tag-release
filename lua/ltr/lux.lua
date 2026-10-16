@@ -57,4 +57,14 @@ function Lux.sign_protocol_from_env()
   return os.getenv('LTR_SIGN_PROTOCOL') or 'none'
 end
 
+---Shell prefix that exposes the API key to lux via `LUX_API_KEY`,
+---falling back to the deprecated `LUAROCKS_API_KEY`.
+---@return string
+function Lux.api_key_env()
+  if os.getenv('LUX_API_KEY') or not os.getenv('LUAROCKS_API_KEY') then
+    return ''
+  end
+  return 'env LUX_API_KEY="$LUAROCKS_API_KEY" '
+end
+
 return Lux
