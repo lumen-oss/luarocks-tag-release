@@ -14,6 +14,12 @@ dev = "git+https://github.com/lumen-oss/luarocks-tag-release.git"
 dkjson = ">= 2.5"
 luafilesystem = ">= 1.8"
 
+[test_dependencies]
+busted = ">= 2.0"
+
+[test]
+type = "busted"
+
 [run]
 args = ["bin/luarocks-tag-release-action.lua"]
 

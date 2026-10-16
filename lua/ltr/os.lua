@@ -70,6 +70,8 @@ end
 function OS.filter_existing_directories(directories)
   local existing_directories = {}
   for _, dir in pairs(directories) do
+    -- `lfs` is a C module; lux cannot resolve it: https://github.com/lumen-oss/lux/issues/2039
+    ---@diagnostic disable-next-line: unresolved-require
     if require('lfs').attributes(dir, 'mode') == 'directory' then
       existing_directories[#existing_directories + 1] = dir
     end

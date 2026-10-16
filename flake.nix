@@ -31,11 +31,6 @@
     flake-utils.lib.eachSystem supportedSystems (system: let
       pkgs = import nixpkgs {inherit system;};
 
-      base-dependencies = with pkgs.lua55Packages; [
-        dkjson
-        luafilesystem
-      ];
-
       formatting = git-hooks.lib.${system}.run {
         src = self;
         hooks = {
@@ -54,33 +49,6 @@
               MD032 = false;
             };
           };
-          lua-ls = {
-            enable = true;
-            settings.configuration = {
-              runtime.version = "LuaJIT";
-              Lua = {
-                workspace = {
-                  library =
-                    base-dependencies
-                    ++ [
-                      "\${3rd}/busted/library"
-                      "\${3rd}/luassert/library"
-                    ];
-                  checkThirdParty = false;
-                  ignoreDir = [
-                    ".git"
-                    ".github"
-                    ".direnv"
-                    "result"
-                    "nix"
-                    "resources"
-                    "spec"
-                  ];
-                };
-                diagnostics.libraryFiles = "Disable";
-              };
-            };
-          };
         };
       };
 
@@ -91,8 +59,8 @@
             lua-language-server
             lux-cli
             luarocks
-            luaPackages.dkjson
-            lua
+            lua55Packages.dkjson
+            lua5_5
           ])
           ++ self.checks.${system}.formatting.enabledPackages;
         shellHook = ''

@@ -74,7 +74,7 @@ end
 ---@param stdout string
 ---@return string rockspec_path
 local function parse_rockspec_path(stdout)
-  return assert(json.decode(stdout)[1], 'Could not determine the generated rockspec path.')
+  return (assert(json.decode(stdout)[1], 'Could not determine the generated rockspec path.'))
 end
 
 ---@param package_name string
