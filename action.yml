@@ -75,7 +75,12 @@ runs:
       with:
         version: "0.47.0"
 
-    - run: luarocks-tag-release-action
+    - name: Install the action
+      run: lx --no-luarc --tree "$RUNNER_TEMP/lux-tree" install --path "${{ github.action_path }}"
+      shell: bash
+
+    - name: Run
+      run: lx --tree "$RUNNER_TEMP/lux-tree" exec luarocks-tag-release-action.lua
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_VERSION: ${{ inputs.version }}
