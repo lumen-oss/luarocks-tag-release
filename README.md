@@ -46,16 +46,16 @@ No need to add a rockspec to your repository for each release (or at all).
 
 ## Features
 
-- Can generate a [rockspec](https://github.com/luarocks/luarocks/wiki/Rockspec-format)
-  based on repository metadata and information provided to the action.
-- Tests a local installation from the rockspec file before uploading.
-- Uploads the package to LuaRocks.
+- Generates a [lux.toml](https://lux.lumen-labs.org/reference/lux-toml) from repository metadata
+  and action inputs, unless the repository already provides a `lux.toml`.
+- Tests a local installation from the generated rockspec before uploading.
+- Uploads the package to LuaRocks using [lux](https://lux.lumen-labs.org/).
 - Tests the installation of the uploaded package.
 
 ## Prerequisites
 
 - A LuaRocks account and an [API key](https://luarocks.org/settings/api-keys).
-- Add the API key to your [repository's GitHub Actions secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository).
+- Add the API key to your [repository's GitHub Actions secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) as `LUX_API_KEY`.
 
 ## Usage
 
@@ -79,7 +79,7 @@ jobs:
       - name: LuaRocks Upload
         uses: nvim-neorocks/luarocks-tag-release@v8
         env:
-          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+          LUX_API_KEY: ${{ secrets.LUX_API_KEY }}
 ```
 
 > [!NOTE]
@@ -98,8 +98,14 @@ The name of the the luarocks package.
 
 ### `dependencies`
 
-Lua dependencies.
+Lua dependencies, added to the generated project with `lx add`.
 Any dependencies specified here must be available on LuaRocks.
+
+> [!NOTE]
+>
+> lux requires an explicit version requirement for each dependency.
+> Bare names (e.g. `plenary.nvim`) are resolved by lux to the latest version at publish time
+> This may change in the future (see [lux#2011](https://github.com/lumen-oss/lux/issues/2011)).
 
 Example:
 
@@ -110,21 +116,6 @@ Example:
     dependencies: |
       plenary.nvim
       telescope.nvim
-```
-
-### `test_dependencies`
-
-Lua dependencies of the test suite.
-Any dependencies specified here must be available on LuaRocks.
-
-Example:
-
-```yaml
-- name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
-  with:
-    test_dependencies: |
-      luaunit
 ```
 
 ### `labels`
@@ -217,10 +208,11 @@ Example:
 
 ### `template`
 
-By default, this workflow will generate a rockspec based on a [predefined template](resources/rockspec.template).
+Path to a custom [`extra.rockspec`](https://lux.lumen-labs.org/guides/rockspec).
 
-You can also add a modified template to your repository and specify the path
-to it with the `template` variable.
+Use this to customise the generated project's build specification, dependencies,
+or other fields that cannot be expressed through the action inputs.
+lux merges the `extra.rockspec` over the generated `lux.toml`.
 
 Example:
 
@@ -228,75 +220,14 @@ Example:
 - name: LuaRocks Upload
   uses: nvim-neorocks/luarocks-tag-release@v8
   with:
-    template: "/path/to/my/template.rockspec"
+    template: "/path/to/my/extra.rockspec"
 ```
 
-#### Using an scm rockspec as the template
-
-You can keep a single `<package>-scm-1.rockspec` in your repository's root
-and use it both as your development rockspec and as the release template,
-by pointing `template` at it and using the reserved `$is_release` variable to
-branch between the two modes:
-
-```yaml
-- name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
-  with:
-    template: "./mypackage-scm-1.rockspec"
-```
-
-```lua
-local git_ref = '$git_ref'
-local modrev = '$modrev'
-local is_release = '$is_release' == 'true'
-
-local repo_url = 'https://github.com/owner/mypackage'
-
-rockspec_format = '3.0'
-package = 'mypackage'
-
-dependencies = {
-  'lua >= 5.1',
-}
-
-build = {
-  type = 'builtin',
-  copy_directories = { 'lua' },
-}
-
-if is_release then
-  version = modrev .. '-' .. '$specrev'
-  source = {
-    url = repo_url .. '/archive/' .. git_ref .. '.zip',
-    dir = 'mypackage-' .. git_ref,
-  }
-else
-  version = 'scm-1'
-  source = {
-    url = repo_url:gsub('https', 'git'),
-  }
-end
-```
-
-When the action processes the template, `$is_release` is replaced with `true`
-for a tagged release and `false` for an `scm`/`dev` publish (i.e. whenever
-`version` is unset, `scm` or `dev`).
-When the file is loaded directly as an scm rockspec
-(e.g. `luarocks install mypackage-scm-1.rockspec`), the literal
-`'$is_release' == 'true'` is valid Lua and evaluates to `false`, so the scm
-branch is taken instead.
-
-> [!IMPORTANT]
+> [!WARNING]
 >
-> Only the `$is_release`, `$git_ref`, `$modrev`, `$specrev`, `$repo_name`
-> placeholders are safe inside a dual-purpose scm rockspec, and only in the
-> `is_release` branch (or a top-level `local` whose value is consumed there).
-> Everything consumed in the scm branch or at the top level (`package`,
-> `repo_url`, `dependencies`, `build`, etc.) must be hardcoded.
-> The code-valued placeholders (`$dependencies`, `$test_dependencies`, `$labels`,
-> `$detailed_description`, `$license`, `$copy_directories`) are a syntax error
-> when left unreplaced, and a string placeholder such as `package = '$package'`
-> would leak the literal `$package` into the scm rockspec.
+> An `extra.rockspec` must not define `version` or `source`
+> (those are generated by the action), and the `$placeholder` templating
+> from earlier versions of luarocks-tag-release no longer applies.
 
 ### `license` (optional)
 
@@ -320,78 +251,13 @@ Example:
 >
 > ![about](https://user-images.githubusercontent.com/12857160/218101570-b0605716-0457-47c1-ab2e-91d48a48881c.png)
 
-### `version` (optional)
+### `version` (deprecated)
 
-The package version to release to LuaRocks (without the rockspec revision).
-By default, this workflow will use `github.ref_name` (the git tag or branch name)
-to determine the LuaRocks package version.
-If you do not have a workflow that releases based on tags,
-you can manually set the version input.
+The package version is derived by [lux](https://lux.lumen-labs.org/) from the git tag
+(a leading `v` is stripped). If there is no SemVer tag, a `dev` version is published.
 
-Setting this input to either `null`, `"scm"` or `"dev"` will result in a
-scm release, where the generated rockspec's source URL
-is the repository's URL.
-
-The following is an example for a basic workflow that runs daily at 00:00,
-sets the package version to `0.0.<number_of_commits>`, and publishes to LuaRocks
-if there have been any commits in the last 24 hours:
-
-<!-- markdownlint-disable -->
-```yaml
-name: "release"
-on:
-  workflow_dispatch: # allows manual triggering
-  schedule:
-    - cron: '0 0 * * *' # runs daily at 00:00
-  pull_request: # Will test a local install without uploading to luarocks.org
-
-jobs:
-  luarocks-upload:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0 # Required to count the commits
-      - name: Set luarocks version
-        run: echo "LUAROCKS_VERSION=0.0.$(git log --oneline | wc -l)" >> $GITHUB_ENV
-      - name: Get new commits
-        run: echo "NEW_COMMIT_COUNT=$(git log --oneline --since '24 hours ago' | wc -l)" >> $GITHUB_ENV
-      - name: LuaRocks Upload
-        uses: nvim-neorocks/luarocks-tag-release@v8
-        if: ${{ env.NEW_COMMIT_COUNT > 0 }}
-        env:
-          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
-        with:
-          version: ${{ env.LUAROCKS_VERSION }}
-```
-<!-- markdownlint-restore -->
-
-> [!NOTE]
->
-> A `v` prefix (e.g. git tags such as `v1.0.0`) is also supported.
-> It will be removed from the LuaRocks version.
-
-### `specrev` (optional)
-
-The specrev (revision) of the generated rockspec. Defaults to `'1'`.
-
-> [!TIP]
->
-> When publishing `scm` or `dev` rockspecs, it can be useful to set
-> point the source to a commit hash, and increment the `specrev` with every
-> new push.
-> This allows consumers to roll back or pin dev versions.
-
-Example:
-
-```yaml
-- name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
-  with:
-    version: "scm"
-    # Add logic or determining if the specrev needs to be incremented
-    specrev: "${{ env.SPECREV }}"
-```
+This input is retained for backward compatibility, but no longer overrides the published version.
+The `specrev` input has been removed; lux manages the rockspec revision automatically.
 
 ### `fail_on_duplicate` (optional)
 
@@ -399,11 +265,9 @@ When set to `true` will cause the workflow to fail with an error if the rock alr
 By default, if the rock already exists with a given version, the workflow will do nothing and fall back to other tasks
 instead (e.g. running tests).
 
-### `extra_luarocks_args`
+### `extra_lux_args`
 
-Extra args to pass to the luarocks command.
-This is useful if luarocks cannot find headers needed for the installation
-or if you need to set the Lua version to build for before uploading.
+Extra arguments passed to the lux command.
 
 Example:
 
@@ -413,8 +277,8 @@ Example:
 - name: LuaRocks Upload
   uses: nvim-neorocks/luarocks-tag-release@v8
   with:
-    extra_luarocks_args: |
-      --lua-version 5.4 CURL_INCDIR=/usr/include/x86_64-linux-gnu
+    extra_lux_args: |
+      --lua-version 5.4 --variables CURL_INCDIR=/usr/include/x86_64-linux-gnu
 ```
 
 > [!TIP]
@@ -432,8 +296,9 @@ See the [Example configurations wiki page](https://github.com/nvim-neorocks/luar
 - This workflow only works on public repositories.
 - It was designed with Neovim plugins in mind. It should work with any LuaRocks package
   (lua >= 5.1), but this has not been tested.
-- This action uses lua 5.1. So any packages that depend on lua > 5.1
-  will fail to install.
+- The default Lua version constraint is `>= 5.1`.
+  Use `extra_lux_args: --lua-version <version>` to build for a different Lua version.
+- `test_dependencies` are not included in the generated rockspec by lux.
 
 ## Related
 
