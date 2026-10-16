@@ -14,6 +14,14 @@ local Release = {}
 ---@field repository? GithubRepository
 ---@field pull_request? { head?: { repo?: GithubRepository } }
 
+---@class ReleaseInput
+---@field git_server_url string
+---@field github_repo string
+---@field license string|nil
+---@field summary string
+---@field labels string[]
+---@field github_event GithubEvent|nil
+
 local on_missing_license = [[
     Could not get the license SPDX ID from the GitHub API.
     Please add a license file that GitHub can recognise or add a `license` input,
@@ -33,7 +41,7 @@ local function repo_metadata(event)
   return event.repository
 end
 
----@param meta GenerateMeta
+---@param meta ReleaseInput
 ---@param repo GithubRepository|nil
 ---@return string|nil license
 local function resolve_license(meta, repo)
@@ -50,7 +58,7 @@ local function resolve_license(meta, repo)
   return nil
 end
 
----@param meta GenerateMeta
+---@param meta ReleaseInput
 ---@return string
 local function repo_url(meta)
   return meta.git_server_url .. '/' .. meta.github_repo
@@ -94,7 +102,7 @@ end
 ---@field repo_url string
 
 ---Resolve release metadata from the GitHub event and workflow inputs.
----@param meta GenerateMeta
+---@param meta ReleaseInput
 ---@return ResolvedRelease
 function Release.resolve(meta)
   local repo = repo_metadata(meta.github_event)

@@ -28,11 +28,28 @@ function Lux.install(tree, package_req)
   return with_tree(tree, 'install "' .. package_req .. '"')
 end
 
+---@param dependency string
+---@return string
+function Lux.add(dependency)
+  return 'lx --no-luarc add "' .. dependency .. '"'
+end
+
+---@param dependency string
+---@return string
+function Lux.add_test(dependency)
+  return 'lx --no-luarc add --test "' .. dependency .. '"'
+end
+
+---@return string
+function Lux.generate_rockspec()
+  return 'lx --no-luarc generate-rockspec --output-format json'
+end
+
 ---@param sign_protocol string|nil
 ---@return string
 function Lux.upload(sign_protocol)
   local protocol = sign_protocol or Lux.sign_protocol_from_env()
-  return 'lx --no-prompt true upload --sign-protocol ' .. protocol
+  return 'lx --no-luarc --no-prompt true upload --sign-protocol ' .. protocol
 end
 
 ---@return string

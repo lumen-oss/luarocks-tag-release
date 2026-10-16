@@ -17,7 +17,7 @@ describe('Lux', function()
   end)
 
   it('Generates an upload command with an explicit sign protocol', function()
-    assert.are.same('lx --no-prompt true upload --sign-protocol none', Lux.upload('none'))
+    assert.are.same('lx --no-luarc --no-prompt true upload --sign-protocol none', Lux.upload('none'))
   end)
 
   describe('sign protocol from the environment', function()
@@ -34,7 +34,7 @@ describe('Lux', function()
         return nil
       end
       assert.are.same('none', Lux.sign_protocol_from_env())
-      assert.are.same('lx --no-prompt true upload --sign-protocol none', Lux.upload())
+      assert.are.same('lx --no-luarc --no-prompt true upload --sign-protocol none', Lux.upload())
     end)
 
     it('Reads LTR_SIGN_PROTOCOL', function()
@@ -42,7 +42,19 @@ describe('Lux', function()
         return name == 'LTR_SIGN_PROTOCOL' and 'openpgp' or nil
       end
       assert.are.same('openpgp', Lux.sign_protocol_from_env())
-      assert.are.same('lx --no-prompt true upload --sign-protocol openpgp', Lux.upload())
+      assert.are.same('lx --no-luarc --no-prompt true upload --sign-protocol openpgp', Lux.upload())
     end)
+  end)
+
+  it('Generates an add command', function()
+    assert.are.same('lx --no-luarc add "foo"', Lux.add('foo'))
+  end)
+
+  it('Generates a test add command', function()
+    assert.are.same('lx --no-luarc add --test "busted"', Lux.add_test('busted'))
+  end)
+
+  it('Generates a generate-rockspec command', function()
+    assert.are.same('lx --no-luarc generate-rockspec --output-format json', Lux.generate_rockspec())
   end)
 end)
