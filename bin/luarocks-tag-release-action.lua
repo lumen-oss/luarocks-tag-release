@@ -39,6 +39,7 @@ local git_server_url = os.getenv('GIT_SERVER_URL_OVERRIDE') or getenv_or_err('GI
 local is_pull_request = getenv_or_empty('GITHUB_EVENT_NAME') == 'pull_request'
 
 local license_input = os.getenv('INPUT_LICENSE')
+local template_input = os.getenv('INPUT_TEMPLATE')
 local package_name = getenv_or_err('INPUT_NAME')
 ---@type string | nil
 local package_version = is_pull_request and '0.0.0' or os.getenv('INPUT_VERSION')
@@ -58,6 +59,7 @@ local args = {
   detailed_description_lines = Parser.parse_list_args(getenv_or_empty('INPUT_DETAILED_DESCRIPTION')),
   upload = not is_pull_request,
   license = license_input ~= '' and license_input or nil,
+  template = template_input ~= '' and template_input or nil,
   extra_luarocks_args = Parser.parse_list_args(getenv_or_empty('INPUT_EXTRA_LUAROCKS_ARGS')),
   github_event_path = getenv_or_err('GITHUB_EVENT_PATH'),
   ref_type = os.getenv('GITHUB_REF_TYPE_OVERRIDE') or getenv_or_err('GITHUB_REF_TYPE'),

@@ -14,6 +14,7 @@
 ---@field copy_directories string[] List of directories to add to the project's copy_directories.
 ---@field summary string Package summary.
 ---@field detailed_description_lines string[] Detailed description (list of lines).
+---@field template string|nil Path to a custom `extra.rockspec` template.
 ---@field upload boolean Whether to upload to LuaRocks.
 ---@field license string|nil License SPDX ID (optional).
 ---@field extra_luarocks_args string[]
@@ -48,6 +49,17 @@ local function add_project_dependencies(args)
   for _, dependency in ipairs(args.test_dependencies) do
     OS.execute(Lux.add_test(dependency), error, args.is_debug)
   end
+end
+
+---@param directory string
+---@param args Args
+local function write_custom_template(directory, args)
+  if not args.template then
+    return
+  end
+  local content = assert(OS.read_file(args.template), 'Could not read ' .. args.template)
+  print('Using custom extra.rockspec template: ' .. args.template)
+  OS.write_file(directory .. '/extra.rockspec', content)
 end
 
 ---@param args Args
@@ -158,6 +170,8 @@ local function luarocks_tag_release(package_name, package_version, args)
     write_generated_project(project)
     add_project_dependencies(args)
   end
+
+  write_custom_template(project.directory, args)
 
   local rockspec_path = parse_rockspec_path(run_generate_rockspec(args))
   test_install_rockspec(name, rockspec_path, args)
