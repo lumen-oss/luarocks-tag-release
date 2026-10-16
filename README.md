@@ -77,14 +77,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: LuaRocks Upload
-        uses: nvim-neorocks/luarocks-tag-release@v8
+        uses: nvim-neorocks/luarocks-tag-release@v9
         env:
           LUX_API_KEY: ${{ secrets.LUX_API_KEY }}
 ```
 
 > [!NOTE]
 >
-> Use the `v8` tag to keep up with the latest releases, without breaking changes.
+> Use the `v9` tag to keep up with the latest releases, without breaking changes.
 
 ## Inputs
 
@@ -114,7 +114,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     dependencies: |
       plenary.nvim
@@ -130,7 +130,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     labels: |
       neovim
@@ -146,7 +146,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     copy_directories: |
       {{ neovim.plugin.dirs }}
@@ -201,7 +201,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     detailed_description: |
       Publishes packages to LuaRocks when a git tag is pushed.
@@ -221,7 +221,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     template: "/path/to/my/extra.rockspec"
 ```
@@ -242,7 +242,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     license: "MIT"
 ```
@@ -270,7 +270,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     version: "0.0.123"
 ```
@@ -291,7 +291,7 @@ Example:
 - run: |
     sudo apt-get install -y libcurl4-openssl-dev
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     extra_lux_args: |
       --lua-version 5.4 --variables CURL_INCDIR=/usr/include/x86_64-linux-gnu
@@ -312,7 +312,7 @@ Example:
 
 ```yaml
 - name: LuaRocks Upload
-  uses: nvim-neorocks/luarocks-tag-release@v8
+  uses: nvim-neorocks/luarocks-tag-release@v9
   with:
     gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
     gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
