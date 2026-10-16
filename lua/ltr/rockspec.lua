@@ -1,3 +1,5 @@
+local Release = require('ltr.release')
+
 local Rockspec = {}
 
 ---@param t string[]
@@ -24,7 +26,7 @@ end
 ---@field labels string[] List of labels to add to the rockspec.
 ---@field copy_directories string[] List of directories to add to the rockspec's copy_directories.
 ---@field repo_name string The repository name.
----@field github_event_tbl any|nil GitHub event metadata, read from GITHUB_EVENT_PATH and decoded from JSON
+---@field github_event GithubEvent|nil GitHub event metadata, read from GITHUB_EVENT_PATH and decoded from JSON
 
 ---Generate a rockspec from a template
 ---@param package_name string The name of the LuaRocks package.
@@ -54,43 +56,9 @@ function Rockspec.generate(package_name, modrev, specrev, rockspec_template, met
     return '[[\n' .. table.concat(xs, '\n') .. ']]'
   end
 
-  local repo_url = meta.git_server_url .. '/' .. meta.github_repo
-  local homepage = repo_url
-  local license = ''
-  local repo_meta = meta.github_event_tbl
-    and (
-      meta.github_event_tbl.pull_request
-        and meta.github_event_tbl.pull_request.head
-        and meta.github_event_tbl.pull_request.head.repo
-      or meta.github_event_tbl.repository
-    )
-  local on_missing_license = [[
-    Could not get the license SPDX ID from the GitHub API.
-    Please add a license file that GitHub can recognise or add a `license` input,
-    or specify the license type as a workflow input.
-    See: https://github.com/nvim-neorocks/luarocks-tag-release#license
-    ]]
-  if repo_meta then
-    local repo_license = repo_meta.license or repo_meta.source and repo_meta.source.license
-    if meta.license then
-      license = "license = '" .. meta.license .. "'"
-    elseif repo_license and repo_license.spdx_id ~= '' and repo_license.spdx_id ~= 'NOASSERTION' then
-      license = "license = '" .. repo_license.spdx_id .. "'"
-    else
-      error(on_missing_license)
-    end
-    if not meta.summary or meta.summary == '' then
-      meta.summary = repo_meta.description and repo_meta.description or ''
-    end
-    if #meta.labels == 0 then
-      meta.labels = repo_meta.topics and repo_meta.topics or {}
-    end
-    if repo_meta.homepage and repo_meta.homepage ~= '' then
-      homepage = repo_meta.homepage
-    end
-  elseif meta.license then
-    license = 'license = "' .. meta.license .. '"'
-  end
+  local release = Release.resolve(meta)
+  local repo_url = release.repo_url
+  local license = release.license and ("license = '" .. release.license .. "'") or ''
 
   ---@param str string
   ---@return string
@@ -113,12 +81,12 @@ function Rockspec.generate(package_name, modrev, specrev, rockspec_template, met
     :gsub('$repo_url', repo_url)
     :gsub('$archive_dir_suffix', archive_dir_suffix)
     :gsub('$package', package_name)
-    :gsub('$summary', escape_quotes(meta.summary))
+    :gsub('$summary', escape_quotes(release.summary))
     :gsub('$detailed_description', mk_lua_multiline_str(meta.detailed_description_lines))
     :gsub('$dependencies', mk_lua_list_string(meta.dependencies))
     :gsub('$test_dependencies', mk_lua_list_string(meta.test_dependencies))
-    :gsub('$labels', mk_lua_list_string(meta.labels))
-    :gsub('$homepage', homepage)
+    :gsub('$labels', mk_lua_list_string(release.labels))
+    :gsub('$homepage', release.homepage)
     :gsub('$license', license)
     :gsub('$copy_directories', mk_lua_list_string(meta.copy_directories))
     :gsub('$repo_name', meta.repo_name)

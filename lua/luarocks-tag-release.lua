@@ -131,7 +131,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
   local github_event_data = args.github_event_path and OS.read_file(args.github_event_path)
   local json = require('dkjson')
 
-  local github_event_tbl = github_event_data and json.decode(github_event_data)
+  local github_event = github_event_data and json.decode(github_event_data)
   local rockspec = require('ltr.rockspec').generate(package_name, modrev, specrev, rockspec_template, {
     ref_type = args.ref_type,
     git_server_url = args.git_server_url,
@@ -145,7 +145,7 @@ local function luarocks_tag_release(package_name, package_version, specrev, args
     labels = args.labels,
     copy_directories = args.copy_directories,
     repo_name = args.repo_name,
-    github_event_tbl = github_event_tbl,
+    github_event = github_event,
   })
 
   print('')
