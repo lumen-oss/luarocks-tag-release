@@ -94,6 +94,7 @@
         buildInputs =
           (with pkgs; [
             lua-language-server
+            lux-cli
             luarocks
             luaPackages.dkjson
             lua
