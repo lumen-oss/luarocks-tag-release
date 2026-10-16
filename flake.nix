@@ -29,12 +29,7 @@
     ];
   in
     flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [
-          (import ./nix/overlay.nix {inherit self;})
-        ];
-      };
+      pkgs = import nixpkgs {inherit system;};
 
       base-dependencies = with pkgs.lua55Packages; [
         dkjson
@@ -106,20 +101,9 @@
         '';
       };
     in {
-      packages = {
-        default = pkgs.luarocks-tag-release-action;
-        inherit
-          (pkgs)
-          luarocks-tag-release-action
-          ;
-      };
       devShells.default = shell;
       checks = {
         inherit formatting;
-        inherit
-          (pkgs)
-          luarocks-tag-release-action
-          ;
       };
     });
 }

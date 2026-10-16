@@ -150,6 +150,7 @@ end
 local function resolve_meta(args)
   local github_event_data = args.github_event_path and OS.read_file(args.github_event_path)
   local github_event = github_event_data and json.decode(github_event_data)
+  ---@cast github_event GithubEvent|nil
   return Release.resolve {
     git_server_url = args.git_server_url,
     github_repo = args.github_repo,

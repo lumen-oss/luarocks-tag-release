@@ -186,7 +186,7 @@ Example:
 > or the name of your rockspec; those names are used by the .rock format
 > internally, and attempting to copy directories with those names using
 > the build.copy_directories directive will cause a clash.
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 
 ### `summary`
 
