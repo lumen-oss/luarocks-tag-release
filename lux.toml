@@ -1,0 +1,27 @@
+package = "luarocks-tag-release"
+lua = ">= 5.1"
+
+[description]
+summary = "Build and upload LuaRocks packages from Git tags"
+homepage = "https://github.com/marketplace/actions/luarocks-tag-release"
+license = "AGPL-3.0"
+
+[source]
+url = "https://github.com/lumen-oss/luarocks-tag-release/archive/refs/tags/$(REF).zip"
+dev = "git+https://github.com/lumen-oss/luarocks-tag-release.git"
+
+[dependencies]
+dkjson = ">= 2.5"
+luafilesystem = ">= 1.8"
+
+[test_dependencies]
+busted = ">= 2.0"
+
+[test]
+type = "busted"
+
+[run]
+args = ["bin/luarocks-tag-release-action.lua"]
+
+[build]
+type = "builtin"

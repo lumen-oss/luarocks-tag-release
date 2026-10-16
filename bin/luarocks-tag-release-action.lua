@@ -1,4 +1,17 @@
-assert(os.getenv('LUAROCKS_API_KEY'), 'LUAROCKS_API_KEY secret not set')
+local function assert_api_key_present()
+  if not os.getenv('LUX_API_KEY') and not os.getenv('LUAROCKS_API_KEY') then
+    error('LUX_API_KEY secret not set.')
+  end
+end
+
+local function warn_deprecated_api_key()
+  if not os.getenv('LUX_API_KEY') then
+    print('::warning::LUAROCKS_API_KEY is deprecated; please use LUX_API_KEY instead.')
+  end
+end
+
+assert_api_key_present()
+warn_deprecated_api_key()
 
 local Parser = require('ltr.parser')
 local OS = require('ltr.os')
@@ -10,8 +23,6 @@ end
 local function getenv_or_empty(env_var)
   return os.getenv(env_var) or ''
 end
-
-local action_path = getenv_or_err('GITHUB_ACTION_PATH')
 
 local github_repo = os.getenv('GITHUB_REPOSITORY_OVERRIDE') or getenv_or_err('GITHUB_REPOSITORY')
 
@@ -46,17 +57,32 @@ local args = {
   ),
   summary = getenv_or_empty('INPUT_SUMMARY'),
   detailed_description_lines = Parser.parse_list_args(getenv_or_empty('INPUT_DETAILED_DESCRIPTION')),
-  rockspec_template_file_path = template_input ~= '' and template_input
-    or action_path .. '/resources/rockspec.template',
   upload = not is_pull_request,
   license = license_input ~= '' and license_input or nil,
+  template = template_input ~= '' and template_input or nil,
   extra_luarocks_args = Parser.parse_list_args(getenv_or_empty('INPUT_EXTRA_LUAROCKS_ARGS')),
+  extra_lux_args = Parser.parse_list_args(getenv_or_empty('INPUT_EXTRA_LUX_ARGS')),
   github_event_path = getenv_or_err('GITHUB_EVENT_PATH'),
   ref_type = os.getenv('GITHUB_REF_TYPE_OVERRIDE') or getenv_or_err('GITHUB_REF_TYPE'),
   git_ref = os.getenv('GITHUB_REF_NAME_OVERRIDE') or getenv_or_err('GITHUB_REF_NAME'),
   is_debug = os.getenv('RUNNER_DEBUG') == '1',
   fail_on_duplicate = getenv_or_empty('INPUT_FAIL_ON_DUPLICATE') == 'true',
 }
+
+local function warn_deprecated_extra_luarocks_args(parsed_args)
+  if #parsed_args.extra_luarocks_args > 0 then
+    print('::warning::extra_luarocks_args is deprecated; please use extra_lux_args instead.')
+  end
+end
+
+local function warn_deprecated_test_dependencies(parsed_args)
+  if #parsed_args.test_dependencies > 0 then
+    print('::warning::test_dependencies is deprecated and is no longer published to the rockspec.')
+  end
+end
+
+warn_deprecated_extra_luarocks_args(args)
+warn_deprecated_test_dependencies(args)
 
 local function get_github_sha()
   return os.getenv('GITHUB_SHA_OVERRIDE') or getenv_or_err('GITHUB_SHA')
@@ -71,13 +97,9 @@ end
 
 local luarocks_tag_release = require('luarocks-tag-release')
 
-local specrev
 if is_pull_request then
   print('Running in a pull request.')
-  specrev = assert(os.getenv('GITHUB_RUN_ATTEMPT'), 'GITHUB_RUN_ATTEMPT not set')
   args.git_ref = get_github_sha()
-else
-  specrev = os.getenv('INPUT_SPECREV') or '1'
 end
 
-luarocks_tag_release(package_name, package_version, specrev, args)
+luarocks_tag_release(package_name, package_version, args)

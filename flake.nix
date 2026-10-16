@@ -29,17 +29,7 @@
     ];
   in
     flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = import nixpkgs {
-        inherit system;
-        overlays = [
-          (import ./nix/overlay.nix {inherit self;})
-        ];
-      };
-
-      base-dependencies = with pkgs.lua55Packages; [
-        dkjson
-        luafilesystem
-      ];
+      pkgs = import nixpkgs {inherit system;};
 
       formatting = git-hooks.lib.${system}.run {
         src = self;
@@ -59,33 +49,6 @@
               MD032 = false;
             };
           };
-          lua-ls = {
-            enable = true;
-            settings.configuration = {
-              runtime.version = "LuaJIT";
-              Lua = {
-                workspace = {
-                  library =
-                    base-dependencies
-                    ++ [
-                      "\${3rd}/busted/library"
-                      "\${3rd}/luassert/library"
-                    ];
-                  checkThirdParty = false;
-                  ignoreDir = [
-                    ".git"
-                    ".github"
-                    ".direnv"
-                    "result"
-                    "nix"
-                    "resources"
-                    "spec"
-                  ];
-                };
-                diagnostics.libraryFiles = "Disable";
-              };
-            };
-          };
         };
       };
 
@@ -94,9 +57,10 @@
         buildInputs =
           (with pkgs; [
             lua-language-server
+            lux-cli
             luarocks
-            luaPackages.dkjson
-            lua
+            lua55Packages.dkjson
+            lua5_5
           ])
           ++ self.checks.${system}.formatting.enabledPackages;
         shellHook = ''
@@ -105,20 +69,9 @@
         '';
       };
     in {
-      packages = {
-        default = pkgs.luarocks-tag-release-action;
-        inherit
-          (pkgs)
-          luarocks-tag-release-action
-          ;
-      };
       devShells.default = shell;
       checks = {
         inherit formatting;
-        inherit
-          (pkgs)
-          luarocks-tag-release-action
-          ;
       };
     });
 }

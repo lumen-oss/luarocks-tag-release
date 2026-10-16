@@ -16,11 +16,6 @@ inputs:
       Can also be set to `null`, `"scm"` or `"dev"` to publish a development rockspec.
     required: false
     default: ${{ github.ref_name }}
-  specrev:
-    description: |
-      The rockspec revision. Defaults to '1', resulting in <version>-1 as the <modrev>-<specrev>.
-    required: false
-    default: "1"
   dependencies:
     description: "List of LuaRocks dependencies."
     required: false
@@ -57,9 +52,26 @@ inputs:
     required: false
   extra_luarocks_args:
     description: |
-      Extra args to pass to the luarocks command.
-      For example: "CURL_DIR=/usr/include/x86_64-linux-gnu/"
+      Deprecated: extra args to pass to the luarocks command.
+      Mapped to lux flags (e.g. `KEY=VALUE` becomes `--variables KEY=VALUE`).
     required: false
+  extra_lux_args:
+    description: "Extra args to pass to the lux command."
+    required: false
+  gpg_private_key:
+    description: |
+      GPG private key used to sign the uploaded rockspec.
+      When unset, uploads are not signed.
+    required: false
+  gpg_passphrase:
+    description: "Passphrase for the GPG private key, if any."
+    required: false
+  sign_protocol:
+    description: |
+      GPG signing protocol used by lux when a GPG key is provided.
+      Ignored when `gpg_private_key` is unset.
+    required: false
+    default: "default"
   fail_on_duplicate:
     description: |
       Whether to fail if the rock's version has already been published to `luarocks.org`.
@@ -67,16 +79,40 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: cachix/install-nix-action@v30
-    - run: |
-        nix profile install --quiet --accept-flake-config "${{ github.action_path }}#luarocks-tag-release-action"
+    - name: Install Lua
+      uses: luarocks/gh-actions-lua@v14
+      with:
+        luaVersion: "5.1"
+
+    - name: Install lux
+      uses: lumen-oss/gh-actions-lux@v1
+      with:
+        version: "0.47.0"
+
+    - name: Install the action
+      run: lx --no-luarc --tree "$RUNNER_TEMP/lux-tree" install --path "${{ github.action_path }}"
       shell: bash
 
-    - run: luarocks-tag-release-action
+    - name: Remove the action's own lux.toml
+      # The action installs itself from its own lux.toml (see the previous step).
+      # When the action is dogfooded in CI, github.action_path is also the workspace.
+      # This removes the action's own lux.toml, which lets the tool generate a project
+      # from the workflow inputs instead.
+      run: rm -f "${{ github.action_path }}/lux.toml"
+      shell: bash
+
+    - name: Import GPG key
+      if: inputs.gpg_private_key != ''
+      uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ inputs.gpg_private_key }}
+        passphrase: ${{ inputs.gpg_passphrase }}
+
+    - name: Run
+      run: lx --tree "$RUNNER_TEMP/lux-tree" exec luarocks-tag-release-action.lua
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_VERSION: ${{ inputs.version }}
-        INPUT_SPECREV: ${{ inputs.specrev }}
         INPUT_DEPENDENCIES: ${{ inputs.dependencies }}
         INPUT_TEST_DEPENDENCIES: ${{ inputs.test_dependencies }}
         INPUT_LABELS: ${{ inputs.labels }}
@@ -86,6 +122,8 @@ runs:
         INPUT_TEMPLATE: ${{ inputs.template }}
         INPUT_LICENSE: ${{ inputs.license }}
         INPUT_EXTRA_LUAROCKS_ARGS: ${{ inputs.extra_luarocks_args }}
+        INPUT_EXTRA_LUX_ARGS: ${{ inputs.extra_lux_args }}
         INPUT_FAIL_ON_DUPLICATE: ${{ inputs.fail_on_duplicate }}
         RUNNER_DEBUG: ${{ runner.debug }}
+        LTR_SIGN_PROTOCOL: ${{ inputs.gpg_private_key != '' && inputs.sign_protocol || 'none' }}
       shell: bash

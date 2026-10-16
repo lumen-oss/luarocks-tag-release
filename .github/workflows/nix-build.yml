@@ -23,7 +23,6 @@ jobs:
         os:
           - ubuntu-latest
         attribute:
-          - .#luarocks-tag-release-action
           - .#devShells.x86_64-linux.default
     steps:
     - uses: actions/checkout@v7
