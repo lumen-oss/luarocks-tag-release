@@ -63,6 +63,20 @@ inputs:
   extra_lux_args:
     description: "Extra args to pass to the lux command."
     required: false
+  gpg_private_key:
+    description: |
+      GPG private key used to sign the uploaded rockspec.
+      When unset, uploads are not signed.
+    required: false
+  gpg_passphrase:
+    description: "Passphrase for the GPG private key, if any."
+    required: false
+  sign_protocol:
+    description: |
+      GPG signing protocol used by lux when a GPG key is provided.
+      Ignored when `gpg_private_key` is unset.
+    required: false
+    default: "default"
   fail_on_duplicate:
     description: |
       Whether to fail if the rock's version has already been published to `luarocks.org`.
@@ -78,6 +92,13 @@ runs:
     - name: Install the action
       run: lx --no-luarc --tree "$RUNNER_TEMP/lux-tree" install --path "${{ github.action_path }}"
       shell: bash
+
+    - name: Import GPG key
+      if: inputs.gpg_private_key != ''
+      uses: crazy-max/ghaction-import-gpg@v6
+      with:
+        gpg_private_key: ${{ inputs.gpg_private_key }}
+        passphrase: ${{ inputs.gpg_passphrase }}
 
     - name: Run
       run: lx --tree "$RUNNER_TEMP/lux-tree" exec luarocks-tag-release-action.lua
@@ -97,4 +118,5 @@ runs:
         INPUT_EXTRA_LUX_ARGS: ${{ inputs.extra_lux_args }}
         INPUT_FAIL_ON_DUPLICATE: ${{ inputs.fail_on_duplicate }}
         RUNNER_DEBUG: ${{ runner.debug }}
+        LTR_SIGN_PROTOCOL: ${{ inputs.gpg_private_key != '' && inputs.sign_protocol || 'none' }}
       shell: bash

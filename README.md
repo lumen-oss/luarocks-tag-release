@@ -303,6 +303,30 @@ Example:
 > (assuming you are have set `runs-on: ubuntu-xyz`),
 > you can run `dpkg -L <package-name>`.
 
+### `gpg_private_key` (optional)
+
+An ASCII-armoured GPG private key used to sign the uploaded rockspec.
+When unset, uploads are not signed.
+
+Example:
+
+```yaml
+- name: LuaRocks Upload
+  uses: nvim-neorocks/luarocks-tag-release@v8
+  with:
+    gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+    gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
+```
+
+### `gpg_passphrase` (optional)
+
+The passphrase for `gpg_private_key`, if one is set.
+
+### `sign_protocol` (optional)
+
+The GPG signing protocol used by lux when a key is provided.
+Defaults to `default`. Ignored when `gpg_private_key` is unset.
+
 ## Example configurations
 
 See the [Example configurations wiki page](https://github.com/nvim-neorocks/luarocks-tag-release/wiki/Example-configurations).
