@@ -2,6 +2,17 @@
 
 # Changelog
 
+## [9.0.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v8.0.0...v9.0.0) (2026-10-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* use Lux instead of LuaRocks ([#1015](https://github.com/lumen-oss/luarocks-tag-release/issues/1015))
+
+### Features
+
+* use Lux instead of LuaRocks ([#1015](https://github.com/lumen-oss/luarocks-tag-release/issues/1015)) ([fcb8116](https://github.com/lumen-oss/luarocks-tag-release/commit/fcb81163b652a5d5f88e1f74645a2295a492a2fb))
+
 ## [8.0.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v7.3.0...v8.0.0) (2026-10-14)
 
 
