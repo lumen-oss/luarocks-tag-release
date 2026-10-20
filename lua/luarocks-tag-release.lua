@@ -104,9 +104,23 @@ local function on_upload_error(args)
 end
 
 ---@param args Args
+---@return string
+local function effective_sign_protocol(args)
+  local protocol = Lux.sign_protocol_from_env()
+  local help = OS.execute('lx upload --help', error, args.is_debug)
+  if not help:find('--sign-protocol', 1, true) then
+    if protocol ~= 'none' then
+      print('::warning::GPG signing is not supported by this Lux build; uploading unsigned.')
+    end
+    return ''
+  end
+  return protocol
+end
+
+---@param args Args
 ---@param extra_lux_args string
 local function upload(args, extra_lux_args)
-  local cmd = Lux.api_key_env() .. Lux.upload(Lux.sign_protocol_from_env(), extra_lux_args)
+  local cmd = Lux.api_key_env() .. Lux.upload(effective_sign_protocol(args), extra_lux_args)
   print('UPLOAD: ' .. cmd)
   print(OS.execute(cmd, on_upload_error(args), args.is_debug))
 end

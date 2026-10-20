@@ -62,11 +62,29 @@ function Lux.generate_rockspec(extra_lux_args)
 end
 
 ---@param sign_protocol string|nil
+---@return string
+local function resolve_sign_protocol(sign_protocol)
+  if sign_protocol == nil then
+    return Lux.sign_protocol_from_env()
+  end
+  return sign_protocol
+end
+
+---@param protocol string
+---@return string
+local function sign_protocol_flag(protocol)
+  return protocol ~= '' and (' --sign-protocol ' .. protocol) or ''
+end
+
+---@param sign_protocol string|nil
 ---@param extra_lux_args string|nil
 ---@return string
 function Lux.upload(sign_protocol, extra_lux_args)
-  local protocol = sign_protocol or Lux.sign_protocol_from_env()
-  return 'lx --no-luarc ' .. lux_args_prefix(extra_lux_args) .. '--no-prompt true upload --sign-protocol ' .. protocol
+  local protocol = resolve_sign_protocol(sign_protocol)
+  return 'lx --no-luarc '
+    .. lux_args_prefix(extra_lux_args)
+    .. '--no-prompt true upload'
+    .. sign_protocol_flag(protocol)
 end
 
 ---@param extra_luarocks_args string[] Legacy `extra_luarocks_args` tokens.
