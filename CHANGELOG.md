@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.0.2](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.0.1...v9.0.2) (2026-10-20)
+
+
+### Bug Fixes
+
+* **action:** disable the lux loader when running the tool ([ad40214](https://github.com/lumen-oss/luarocks-tag-release/commit/ad402148dd9252be385da9d9046bfc7d00f79816))
+
 ## [9.0.1](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.0.0...v9.0.1) (2026-10-20)
 
 
