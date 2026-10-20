@@ -89,6 +89,11 @@ runs:
       with:
         version: "0.47.0"
 
+    - name: Install Lua build dependencies
+      if: runner.os == 'Linux'
+      run: sudo apt-get install -y libreadline-dev
+      shell: bash
+
     - name: Install the action
       run: lx --no-luarc --tree "$RUNNER_TEMP/lux-tree" install --path "${{ github.action_path }}"
       shell: bash
