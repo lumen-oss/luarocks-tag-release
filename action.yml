@@ -109,7 +109,7 @@ runs:
         passphrase: ${{ inputs.gpg_passphrase }}
 
     - name: Run
-      run: lx --tree "$RUNNER_TEMP/lux-tree" exec luarocks-tag-release-action.lua
+      run: lx --tree "$RUNNER_TEMP/lux-tree" exec --no-loader luarocks-tag-release-action.lua
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_VERSION: ${{ inputs.version }}
