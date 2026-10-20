@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.0.1](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.0.0...v9.0.1) (2026-10-20)
+
+
+### Bug Fixes
+
+* only pass --sign-protocol when lux supports it ([b4470b9](https://github.com/lumen-oss/luarocks-tag-release/commit/b4470b94151a46786046058cdc1abac136896533))
+
 ## [9.0.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v8.0.0...v9.0.0) (2026-10-16)
 
 
