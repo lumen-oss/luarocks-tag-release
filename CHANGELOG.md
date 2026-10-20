@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.0.3](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.0.2...v9.0.3) (2026-10-20)
+
+
+### Bug Fixes
+
+* **action:** install libreadline-dev for lux's Lua build ([6edd8c9](https://github.com/lumen-oss/luarocks-tag-release/commit/6edd8c95aa7a02111e4a152517dcd05fbaf63a7b))
+
 ## [9.0.2](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.0.1...v9.0.2) (2026-10-20)
 
 
