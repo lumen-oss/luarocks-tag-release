@@ -41,7 +41,11 @@ inputs:
     description: "Detailed description of the package."
     required: false
   template:
-    description: "Path to a rockspec template."
+    description: |
+      Path to a custom extra.rockspec.
+      Use this to customise the generated project's build specification, dependencies,
+      or other fields that cannot be expressed through the action inputs.
+      Lux merges the extra.rockspec over the generated lux.toml.
     required: false
   license:
     description: |
