@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.1.1](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.1.0...v9.1.1) (2026-10-23)
+
+
+### Bug Fixes
+
+* **inputs:** update outdated `template` description ([42bfd60](https://github.com/lumen-oss/luarocks-tag-release/commit/42bfd604112ae1a5de87d15da810fed38bf4df53))
+
 ## [9.1.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.0.3...v9.1.0) (2026-10-23)
 
 
