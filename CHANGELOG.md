@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.1.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.0.3...v9.1.0) (2026-10-23)
+
+
+### Features
+
+* add lua_version and lux_version ([#1028](https://github.com/lumen-oss/luarocks-tag-release/issues/1028)) ([82e3f25](https://github.com/lumen-oss/luarocks-tag-release/commit/82e3f25155a616a69e60eb7e0e6eeca3c1e92423))
+
 ## [9.0.3](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.0.2...v9.0.3) (2026-10-20)
 
 
