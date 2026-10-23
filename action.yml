@@ -76,18 +76,28 @@ inputs:
     description: |
       Whether to fail if the rock's version has already been published to `luarocks.org`.
     required: false
+  lua_version:
+    description: |
+      The Lua version to build, test and publish with.
+    required: false
+    default: "5.1"
+  lux_version:
+    description: |
+      The lux version to install and run.
+    required: false
+    default: "0.48.0"
 runs:
   using: "composite"
   steps:
     - name: Install Lua
       uses: luarocks/gh-actions-lua@v14
       with:
-        luaVersion: "5.1"
+        luaVersion: ${{ inputs.lua_version }}
 
     - name: Install Lux
       uses: lumen-oss/gh-actions-lux@v1
       with:
-        version: "0.47.0"
+        version: ${{ inputs.lux_version }}
 
     - name: Install Lua build dependencies
       if: runner.os == 'Linux'
