@@ -281,6 +281,40 @@ When set to `true` will cause the workflow to fail with an error if the rock alr
 By default, if the rock already exists with a given version, the workflow will do nothing and fall back to other tasks
 instead (e.g. running tests).
 
+### `lua_version` (optional)
+
+The Lua version this action builds, tests and publishes with.
+Defaults to `5.1`.
+
+Example:
+
+```yaml
+- name: LuaRocks Upload
+  uses: nvim-neorocks/luarocks-tag-release@v9
+  with:
+    lua_version: "5.4"
+```
+
+> [!NOTE]
+>
+> This only chooses the interpreter the package is tested against.
+> The published Lua version constraint is a separate setting
+> (see the `lua` entry of the `dependencies` input).
+
+### `lux_version` (optional)
+
+The [lux](https://lux.lumen-labs.org/) version installed and run by this action.
+Defaults to `0.48.0`.
+
+Example:
+
+```yaml
+- name: LuaRocks Upload
+  uses: nvim-neorocks/luarocks-tag-release@v9
+  with:
+    lux_version: "0.47.0"
+```
+
 ### `extra_lux_args`
 
 Extra arguments passed to the lux command.
@@ -338,8 +372,9 @@ See the [Example configurations wiki page](https://github.com/nvim-neorocks/luar
   (lua >= 5.1), but this has not been tested.
 - The published Lua version constraint defaults to `>= 5.1`.
   To change it, add a `lua` entry to the `dependencies` input (e.g. `lua >= 5.4`).
-- To build/install with a specific Lua version, pass `extra_lux_args: --lua-version <version>`
-  (lux otherwise detects or installs a suitable Lua).
+- To build/install with a Lua version other than the one selected by `lua_version`
+  (e.g. testing several versions with one interpreter), pass
+  `extra_lux_args: --lua-version <version>`.
 
 ## Related
 
