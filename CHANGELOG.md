@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.2.3](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.2.2...v9.2.3) (2026-10-24)
+
+
+### Bug Fixes
+
+* print the generated rockspec ([#1040](https://github.com/lumen-oss/luarocks-tag-release/issues/1040)) ([211f909](https://github.com/lumen-oss/luarocks-tag-release/commit/211f909c216cab83574260b8fa7c4fd9287720fc))
+
 ## [9.2.2](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.2.1...v9.2.2) (2026-10-24)
 
 
