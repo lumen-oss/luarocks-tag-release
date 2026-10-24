@@ -6,7 +6,6 @@ describe('Release', function()
       ref_type = 'tag',
       git_server_url = 'https://github.com',
       github_repo = 'owner/repo',
-      git_ref = '1.0.0',
       summary = '',
       detailed_description_lines = {},
       dependencies = {},

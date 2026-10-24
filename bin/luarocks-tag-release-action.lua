@@ -65,7 +65,6 @@ local args = {
   lua_version = getenv_or_empty('INPUT_LUA_VERSION'),
   github_event_path = getenv_or_err('GITHUB_EVENT_PATH'),
   ref_type = os.getenv('GITHUB_REF_TYPE_OVERRIDE') or getenv_or_err('GITHUB_REF_TYPE'),
-  git_ref = os.getenv('GITHUB_REF_NAME_OVERRIDE') or getenv_or_err('GITHUB_REF_NAME'),
   is_debug = os.getenv('RUNNER_DEBUG') == '1',
   fail_on_duplicate = getenv_or_empty('INPUT_FAIL_ON_DUPLICATE') == 'true',
 }
@@ -85,22 +84,18 @@ end
 warn_deprecated_extra_luarocks_args(args)
 warn_deprecated_test_dependencies(args)
 
-local function get_github_sha()
-  return os.getenv('GITHUB_SHA_OVERRIDE') or getenv_or_err('GITHUB_SHA')
-end
-
 print('Workflow has been triggered by: ' .. args.ref_type)
 local is_tag = args.ref_type == 'tag'
 if not is_tag then
   print('Publishing an untagged release.')
-  args.git_ref = get_github_sha()
 end
 
 local luarocks_tag_release = require('luarocks-tag-release')
 
 if is_pull_request then
   print('Running in a pull request.')
-  args.git_ref = get_github_sha()
 end
+
+print('Generating Lux release for: ' .. package_name:lower() .. '.')
 
 luarocks_tag_release(package_name, package_version, args)

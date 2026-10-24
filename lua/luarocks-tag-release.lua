@@ -6,7 +6,6 @@
 ---@field repo_name string The repository name.
 ---@field github_repo string The github repository (owner/repo_name).
 ---@field git_server_url string The github server's URL.
----@field git_ref string E.g. a tag or a commit sha.
 ---@field ref_type github_ref_type
 ---@field dependencies string[] List of LuaRocks package dependencies.
 ---@field test_dependencies string[] List of test suite dependencies.
@@ -212,8 +211,6 @@ local function luarocks_tag_release(package_name, package_version, args)
     args.is_debug
   )
   local release = resolve_meta(args)
-
-  print('Generating Lux release for: ' .. package_name .. ' from ref ' .. args.git_ref .. '.')
 
   local project = Project.for_release(package_name, project_meta(release, args, version), '.')
   if project.generated then
