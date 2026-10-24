@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.2.2](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.2.1...v9.2.2) (2026-10-24)
+
+
+### Bug Fixes
+
+* pass `lua_version` to every lux invocation ([#1036](https://github.com/lumen-oss/luarocks-tag-release/issues/1036)) ([24abdbe](https://github.com/lumen-oss/luarocks-tag-release/commit/24abdbe1f461e3d85ca2608bbf8542ca6ecae3b4))
+
 ## [9.2.1](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.2.0...v9.2.1) (2026-10-24)
 
 
