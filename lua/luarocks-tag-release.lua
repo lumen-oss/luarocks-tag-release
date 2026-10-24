@@ -78,6 +78,13 @@ local function parse_rockspec_path(stdout)
   return (assert(json.decode(stdout)[1], 'Could not determine the generated rockspec path.'))
 end
 
+---@param rockspec_path string
+local function print_rockspec(rockspec_path)
+  local content = assert(OS.read_file(rockspec_path), 'Could not read ' .. rockspec_path)
+  print('Generated ' .. rockspec_path .. ':')
+  print(content)
+end
+
 ---@param package_name string
 ---@param rockspec_path string
 ---@param args Args
@@ -217,6 +224,7 @@ local function luarocks_tag_release(package_name, package_version, args)
   write_custom_template(project.directory, args)
 
   local rockspec_path = parse_rockspec_path(run_generate_rockspec(args, extra_lux_args))
+  print_rockspec(rockspec_path)
   test_install_rockspec(package_name, rockspec_path, args, extra_lux_args)
 
   if args.upload then
