@@ -19,6 +19,7 @@
 ---@field license string|nil License SPDX ID (optional).
 ---@field extra_luarocks_args string[] Legacy extra args, mapped to lux flags.
 ---@field extra_lux_args string[] Extra args passed to the lux command verbatim.
+---@field lua_version? string The Lua version passed to every lux command.
 ---@field github_event_path string|nil The path to the file on the runner that contains the full event webhook payload. For example, /github/workflow/event.json.
 ---@field is_debug boolean Whether to enable debug logging
 ---@field fail_on_duplicate boolean Whether to fail if the rock version has already been uploaded.
@@ -199,8 +200,10 @@ end
 local function luarocks_tag_release(package_name, package_version, args)
   package_name = package_name:lower()
   local version = version_override(package_version)
-  local extra_lux_args =
-    Lux.with_verbose(Lux.combine_args(args.extra_luarocks_args, args.extra_lux_args), args.is_debug)
+  local extra_lux_args = Lux.with_verbose(
+    Lux.with_lua_version(args.lua_version, Lux.combine_args(args.extra_luarocks_args, args.extra_lux_args)),
+    args.is_debug
+  )
   local release = resolve_meta(args)
 
   print('Generating Lux release for: ' .. package_name .. ' from ref ' .. args.git_ref .. '.')

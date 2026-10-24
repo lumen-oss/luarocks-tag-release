@@ -123,6 +123,19 @@ function Lux.with_verbose(extra_lux_args, verbose)
   return extra_lux_args == '' and '--verbose' or (extra_lux_args .. ' --verbose')
 end
 
+---@param lua_version string|nil
+---@param extra_lux_args string
+---@return string
+function Lux.with_lua_version(lua_version, extra_lux_args)
+  if not lua_version or lua_version == '' or extra_lux_args:match('%-%-lua%-version') then
+    return extra_lux_args
+  end
+  if extra_lux_args == '' then
+    return '--lua-version ' .. lua_version
+  end
+  return '--lua-version ' .. lua_version .. ' ' .. extra_lux_args
+end
+
 ---@return string
 function Lux.sign_protocol_from_env()
   return os.getenv('LTR_SIGN_PROTOCOL') or 'none'
