@@ -89,6 +89,22 @@ describe('Lux', function()
     assert.are.same('--preset nvim', Lux.with_verbose('--preset nvim', false))
   end)
 
+  it('Adds the default Lua version', function()
+    assert.are.same('--lua-version 5.1', Lux.with_lua_version('5.1', ''))
+  end)
+
+  it('Appends the default Lua version to extra args', function()
+    assert.are.same('--lua-version 5.1 --preset nvim', Lux.with_lua_version('5.1', '--preset nvim'))
+  end)
+
+  it('Does not override an explicit Lua version', function()
+    assert.are.same('--lua-version 5.4', Lux.with_lua_version('5.1', '--lua-version 5.4'))
+  end)
+
+  it('Does not add a Lua version when unset', function()
+    assert.are.same('--preset nvim', Lux.with_lua_version('', '--preset nvim'))
+  end)
+
   describe('api key environment', function()
     local real_getenv
     before_each(function()

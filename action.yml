@@ -109,7 +109,10 @@ runs:
       shell: bash
 
     - name: Install luarocks-tag-release
-      run: lx --no-luarc --tree "$RUNNER_TEMP/lux-tree" install --path "${{ github.action_path }}"
+      run: >-
+        lx --lua-version "${{ inputs.lua_version }}"
+        --no-luarc --tree "$RUNNER_TEMP/lux-tree"
+        install --path "${{ github.action_path }}"
       shell: bash
 
     - name: Remove luarocks-tag-release's lux.toml
@@ -128,7 +131,10 @@ runs:
         passphrase: ${{ inputs.gpg_passphrase }}
 
     - name: Run
-      run: lx --tree "$RUNNER_TEMP/lux-tree" exec --no-loader luarocks-tag-release-action.lua
+      run: >-
+        lx --lua-version "${{ inputs.lua_version }}"
+        --tree "$RUNNER_TEMP/lux-tree"
+        exec --no-loader luarocks-tag-release-action.lua
       env:
         INPUT_NAME: ${{ inputs.name }}
         INPUT_VERSION: ${{ inputs.version }}
@@ -143,6 +149,7 @@ runs:
         INPUT_EXTRA_LUAROCKS_ARGS: ${{ inputs.extra_luarocks_args }}
         INPUT_EXTRA_LUX_ARGS: ${{ inputs.extra_lux_args }}
         INPUT_FAIL_ON_DUPLICATE: ${{ inputs.fail_on_duplicate }}
+        INPUT_LUA_VERSION: ${{ inputs.lua_version }}
         RUNNER_DEBUG: ${{ runner.debug }}
         LTR_SIGN_PROTOCOL: ${{ inputs.gpg_private_key != '' && inputs.sign_protocol || 'none' }}
       shell: bash
