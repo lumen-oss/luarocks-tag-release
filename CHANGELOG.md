@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.2.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.1.1...v9.2.0) (2026-10-24)
+
+
+### Features
+
+* update lux to 0.49.0 ([#1032](https://github.com/lumen-oss/luarocks-tag-release/issues/1032)) ([641d0f7](https://github.com/lumen-oss/luarocks-tag-release/commit/641d0f73184a02c48497950665b64d50643d4755))
+
 ## [9.1.1](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.1.0...v9.1.1) (2026-10-23)
 
 
