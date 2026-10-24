@@ -1,0 +1,63 @@
+---
+name: update-lux-version
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * *' # runs daily at 04:00
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+      - name: Resolve latest Lux release
+        id: lux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(gh release view --repo lumen-oss/lux --json tagName --jq '.tagName')
+          echo "version=${version#v}" >> "$GITHUB_OUTPUT"
+      - name: Verify release assets
+        id: assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.lux.outputs.version }}
+        run: |
+          for asset in \
+            "lux-cli_${VERSION}_aarch64.dmg" \
+            "lx_${VERSION}_amd64.deb" \
+            "lx_${VERSION}_arm64.deb" \
+            "lx_${VERSION}_x64-setup.exe"; do
+            if ! gh release view "v${VERSION}" --repo lumen-oss/lux --json assets --jq '.assets[].name' | grep -qxF "$asset"; then
+              echo "::notice::Lux ${VERSION} is missing release asset ${asset}; skipping update."
+              echo "ok=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+      - name: Read current Lux version
+        id: current
+        run: echo "version=$(yq '.inputs.lux_version.default' action.yml)" >> "$GITHUB_OUTPUT"
+      - name: Update Lux version
+        if: steps.assets.outputs.ok == 'true' && steps.lux.outputs.version != steps.current.outputs.version
+        env:
+          OLD: ${{ steps.current.outputs.version }}
+          NEW: ${{ steps.lux.outputs.version }}
+        run: sed -i "s/${OLD}/${NEW}/g" action.yml README.md .github/workflows/lux.yml
+      - name: Create or update pull request
+        if: steps.assets.outputs.ok == 'true' && steps.lux.outputs.version != steps.current.outputs.version
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
+          branch: update-lux-version
+          commit-message: "feat: update lux to ${{ steps.lux.outputs.version }}"
+          title: "feat: update lux to ${{ steps.lux.outputs.version }}"
+          labels: |
+            dependencies
+            automated
+      - uses: reitermarkus/automerge@v2
+        if: steps.assets.outputs.ok == 'true' && steps.lux.outputs.version != steps.current.outputs.version
+        with:
+          token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
+          merge-method: squash
