@@ -1,5 +1,3 @@
-#!/usr/bin/env lua
-
 ---@alias github_ref_type 'tag' | 'branch'
 
 ---@class (exact) Args
@@ -150,7 +148,7 @@ local function test_install_package(package_name, version, args, extra_lux_args)
   local tmp_dir = mk_tmp_tree(args)
   local cmd = Lux.install(tmp_dir, package_requirement(package_name, version), extra_lux_args)
   print('TEST: ' .. cmd)
-  print(OS.execute(cmd, print, args.is_debug))
+  print(OS.execute(cmd, error, args.is_debug))
 end
 
 ---@param package_version string|nil
@@ -200,16 +198,26 @@ local function project_meta(release, args, version)
   }
 end
 
----@param package_name string The name of the LuaRocks package.
----@param package_version string|nil The version of the LuaRocks package.
+local M = {}
+
 ---@param args Args
-local function luarocks_tag_release(package_name, package_version, args)
-  package_name = package_name:lower()
-  local version = version_override(package_version)
-  local extra_lux_args = Lux.with_verbose(
+---@return string
+local function extra_args(args)
+  return Lux.with_verbose(
     Lux.with_lua_version(args.lua_version, Lux.combine_args(args.extra_luarocks_args, args.extra_lux_args)),
     args.is_debug
   )
+end
+
+---Generate the project and rockspec, then verify a local installation.
+---@param package_name string
+---@param package_version string|nil
+---@param args Args
+---@return string rockspec_path
+function M.generate(package_name, package_version, args)
+  package_name = package_name:lower()
+  local version = version_override(package_version)
+  local extra_lux_args = extra_args(args)
   local release = resolve_meta(args)
 
   local project = Project.for_release(package_name, project_meta(release, args, version), '.')
@@ -223,10 +231,36 @@ local function luarocks_tag_release(package_name, package_version, args)
   local rockspec_path = parse_rockspec_path(run_generate_rockspec(args, extra_lux_args))
   print_rockspec(rockspec_path)
   test_install_rockspec(package_name, rockspec_path, args, extra_lux_args)
+  return rockspec_path
+end
 
+---Upload the project in the current directory.
+---@param args Args
+function M.upload(args)
+  assert(os.getenv('LUX_API_KEY') or os.getenv('LUAROCKS_API_KEY'), 'LUX_API_KEY secret not set.')
+  if not os.getenv('LUX_API_KEY') then
+    print('::warning::LUAROCKS_API_KEY is deprecated; please use LUX_API_KEY instead.')
+  end
+  upload(args, extra_args(args))
+end
+
+---Verify installation of the uploaded package in a fresh tree.
+---@param package_name string
+---@param package_version string|nil
+---@param args Args
+function M.test(package_name, package_version, args)
+  test_install_package(package_name:lower(), version_override(package_version), args, extra_args(args))
+end
+
+---Run the complete release pipeline used by the GitHub action.
+---@param package_name string
+---@param package_version string|nil
+---@param args Args
+function M.run(package_name, package_version, args)
+  M.generate(package_name, package_version, args)
   if args.upload then
-    upload(args, extra_lux_args)
-    test_install_package(package_name, version, args, extra_lux_args)
+    M.upload(args)
+    M.test(package_name, package_version, args)
   else
     print('Lux upload disabled for "pull_request" events. Skipping...')
   end
@@ -235,4 +269,4 @@ local function luarocks_tag_release(package_name, package_version, args)
   print('Done.')
 end
 
-return luarocks_tag_release
+return M

@@ -127,26 +127,49 @@ runs:
         gpg_private_key: ${{ inputs.gpg_private_key }}
         passphrase: ${{ inputs.gpg_passphrase }}
 
-    - name: Run
+    - name: Generate rockspec
       run: >-
         lx --lua-version "${{ inputs.lua_version }}"
         --tree "$RUNNER_TEMP/lux-tree"
-        exec --no-loader luarocks-tag-release-action.lua
+        exec --no-loader luarocks-tag-release-action.lua generate
+        --name "${{ inputs.name }}"
+        --version "${{ inputs.version }}"
+        --dependencies "${{ inputs.dependencies }}"
+        --test-dependencies "${{ inputs.test_dependencies }}"
+        --labels "${{ inputs.labels }}"
+        --copy-directories "${{ inputs.copy_directories }}"
+        --summary "${{ inputs.summary }}"
+        --detailed-description "${{ inputs.detailed_description }}"
+        --template "${{ inputs.template }}"
+        --license "${{ inputs.license }}"
+        --extra-luarocks-args "${{ inputs.extra_luarocks_args }}"
+        --extra-lux-args "${{ inputs.extra_lux_args }}"
+        --lua-version "${{ inputs.lua_version }}"
+      shell: bash
+
+    - name: Upload rockspec
+      if: github.event_name != 'pull_request'
+      run: >-
+        lx --lua-version "${{ inputs.lua_version }}"
+        --tree "$RUNNER_TEMP/lux-tree"
+        exec --no-loader luarocks-tag-release-action.lua upload
+        --extra-luarocks-args "${{ inputs.extra_luarocks_args }}"
+        --extra-lux-args "${{ inputs.extra_lux_args }}"
+        --lua-version "${{ inputs.lua_version }}"
+        --fail-on-duplicate "${{ inputs.fail_on_duplicate == 'true' }}"
       env:
-        INPUT_NAME: ${{ inputs.name }}
-        INPUT_VERSION: ${{ inputs.version }}
-        INPUT_DEPENDENCIES: ${{ inputs.dependencies }}
-        INPUT_TEST_DEPENDENCIES: ${{ inputs.test_dependencies }}
-        INPUT_LABELS: ${{ inputs.labels }}
-        INPUT_COPY_DIRECTORIES: ${{ inputs.copy_directories }}
-        INPUT_SUMMARY: ${{ inputs.summary }}
-        INPUT_DETAILED_DESCRIPTION: ${{ inputs.detailed_description }}
-        INPUT_TEMPLATE: ${{ inputs.template }}
-        INPUT_LICENSE: ${{ inputs.license }}
-        INPUT_EXTRA_LUAROCKS_ARGS: ${{ inputs.extra_luarocks_args }}
-        INPUT_EXTRA_LUX_ARGS: ${{ inputs.extra_lux_args }}
-        INPUT_FAIL_ON_DUPLICATE: ${{ inputs.fail_on_duplicate }}
-        INPUT_LUA_VERSION: ${{ inputs.lua_version }}
-        RUNNER_DEBUG: ${{ runner.debug }}
         LTR_SIGN_PROTOCOL: ${{ inputs.gpg_private_key != '' && inputs.sign_protocol || 'none' }}
+      shell: bash
+
+    - name: Test published package
+      if: github.event_name != 'pull_request'
+      run: >-
+        lx --lua-version "${{ inputs.lua_version }}"
+        --tree "$RUNNER_TEMP/lux-tree"
+        exec --no-loader luarocks-tag-release-action.lua test
+        --name "${{ inputs.name }}"
+        --version "${{ inputs.version }}"
+        --extra-luarocks-args "${{ inputs.extra_luarocks_args }}"
+        --extra-lux-args "${{ inputs.extra_lux_args }}"
+        --lua-version "${{ inputs.lua_version }}"
       shell: bash
