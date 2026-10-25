@@ -228,7 +228,7 @@ local function luarocks_tag_release(package_name, package_version, args)
     upload(args, extra_lux_args)
     test_install_package(package_name, version, args, extra_lux_args)
   else
-    print('Lux upload disabled. Skipping...')
+    print('Lux upload disabled for "pull_request" events. Skipping...')
   end
 
   print('')
