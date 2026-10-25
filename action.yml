@@ -111,8 +111,8 @@ runs:
     - name: Install luarocks-tag-release
       run: |
         lx --lua-version "${{ inputs.lua_version }}" \
-           --no-luarc --tree "$RUNNER_TEMP/lux-tree" \
-           install --path "${{ github.action_path }}"
+          --no-luarc --tree "$RUNNER_TEMP/lux-tree" \
+          install --path "${{ github.action_path }}"
         # The action installs itself from its own lux.toml (see the previous step).
         # When the action is dogfooded in CI, github.action_path is also the workspace.
         # This removes the action's own lux.toml, which lets the tool generate a project
