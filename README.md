@@ -368,10 +368,9 @@ See the [Example configurations wiki page](https://github.com/nvim-neorocks/luar
 ## Limitations
 
 - This workflow only works on public repositories.
-- It was designed with Neovim plugins in mind. It should work with any LuaRocks package
-  (lua >= 5.1), but this has not been tested.
 - The published Lua version constraint defaults to `>= 5.1`.
-  To change it, add a `lua` entry to the `dependencies` input (e.g. `lua >= 5.4`).
+  To change it, add a `lua` entry to the `dependencies` input (e.g. `lua >= 5.4`)
+  or set the Lua constraint in your project's `lux.toml`.
 - To build/install with a Lua version other than the one selected by `lua_version`
   (e.g. testing several versions with one interpreter), pass
   `extra_lux_args: --lua-version <version>`.
