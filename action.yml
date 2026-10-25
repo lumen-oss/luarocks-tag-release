@@ -109,18 +109,15 @@ runs:
       shell: bash
 
     - name: Install luarocks-tag-release
-      run: >-
-        lx --lua-version "${{ inputs.lua_version }}"
-        --no-luarc --tree "$RUNNER_TEMP/lux-tree"
-        install --path "${{ github.action_path }}"
-      shell: bash
-
-    - name: Remove luarocks-tag-release's lux.toml
-      # The action installs itself from its own lux.toml (see the previous step).
-      # When the action is dogfooded in CI, github.action_path is also the workspace.
-      # This removes the action's own lux.toml, which lets the tool generate a project
-      # from the workflow inputs instead.
-      run: rm -f "${{ github.action_path }}/lux.toml"
+      run: |
+        lx --lua-version "${{ inputs.lua_version }}" \
+          --no-luarc --tree "$RUNNER_TEMP/lux-tree" \
+          install --path "${{ github.action_path }}"
+        # The action installs itself from its own lux.toml (see the previous step).
+        # When the action is dogfooded in CI, github.action_path is also the workspace.
+        # This removes the action's own lux.toml, which lets the tool generate a project
+        # from the workflow inputs instead.
+        rm -f "${{ github.action_path }}/lux.toml"
       shell: bash
 
     - name: Import GPG key
