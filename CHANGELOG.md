@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.3.1](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.3.0...v9.3.1) (2026-10-25)
+
+
+### Bug Fixes
+
+* remove test step (that confuses users) ([#1043](https://github.com/lumen-oss/luarocks-tag-release/issues/1043)) ([e5a069a](https://github.com/lumen-oss/luarocks-tag-release/commit/e5a069ad13ae0dc3837e18600da08b41c54369c3))
+
 ## [9.3.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.2.3...v9.3.0) (2026-10-24)
 
 
