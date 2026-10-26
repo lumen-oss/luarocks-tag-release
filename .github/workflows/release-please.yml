@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Release
+      id: release
       uses: googleapis/release-please-action@v5
       with:
         token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
@@ -25,7 +26,6 @@ jobs:
       with:
         token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
         merge-method: squash
-        pull-request: ${{ github.event.inputs.pull-request }}
     - name: Tag major and minor versions
       if: ${{ steps.release.outputs.release_created }}
       run: |

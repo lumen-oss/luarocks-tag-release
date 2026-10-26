@@ -29,4 +29,3 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
           merge-method: squash
-          pull-request: ${{ github.event.inputs.pull-request }}
