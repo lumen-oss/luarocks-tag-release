@@ -49,6 +49,7 @@
               MD032 = false;
             };
           };
+          actionlint.enable = true;
         };
       };
 
