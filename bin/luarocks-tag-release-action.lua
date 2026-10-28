@@ -1,6 +1,6 @@
-local command = arg[1] or 'run'
-local valid_commands = { generate = true, upload = true, test = true, run = true }
-assert(valid_commands[command], 'Unknown command: ' .. command .. '. Expected generate, upload, test, or run.')
+local command = assert(arg[1], 'Expected a command: generate, upload, or test.')
+local valid_commands = { generate = true, upload = true, test = true }
+assert(valid_commands[command], 'Unknown command: ' .. command .. '. Expected generate, upload, or test.')
 
 local Parser = require('ltr.parser')
 local OS = require('ltr.os')
@@ -98,7 +98,6 @@ local args = {
   ),
   summary = getinput_or_empty('summary'),
   detailed_description_lines = Parser.parse_list_args(getinput_or_empty('detailed_description')),
-  upload = not is_pull_request,
   license = license_input ~= '' and license_input or nil,
   template = template_input ~= '' and template_input or nil,
   extra_luarocks_args = command_args.extra_luarocks_args,
