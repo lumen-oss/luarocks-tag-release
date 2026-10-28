@@ -12,7 +12,6 @@
 ---@field summary string Package summary.
 ---@field detailed_description_lines string[] Detailed description (list of lines).
 ---@field template string|nil Path to a custom `extra.rockspec` template.
----@field upload boolean Whether to upload to LuaRocks.
 ---@field license string|nil License SPDX ID (optional).
 ---@field extra_luarocks_args string[] Legacy extra args, mapped to lux flags.
 ---@field extra_lux_args string[] Extra args passed to the lux command verbatim.
@@ -250,23 +249,6 @@ end
 ---@param args Args
 function M.test(package_name, package_version, args)
   test_install_package(package_name:lower(), version_override(package_version), args, extra_args(args))
-end
-
----Run the complete release pipeline used by the GitHub action.
----@param package_name string
----@param package_version string|nil
----@param args Args
-function M.run(package_name, package_version, args)
-  M.generate(package_name, package_version, args)
-  if args.upload then
-    M.upload(args)
-    M.test(package_name, package_version, args)
-  else
-    print('Lux upload disabled for "pull_request" events. Skipping...')
-  end
-
-  print('')
-  print('Done.')
 end
 
 return M
