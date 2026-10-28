@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.7.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.6.0...v9.7.0) (2026-10-28)
+
+
+### Features
+
+* explode the "run" step into its constitutive steps ([#1058](https://github.com/lumen-oss/luarocks-tag-release/issues/1058)) ([d2f3fb8](https://github.com/lumen-oss/luarocks-tag-release/commit/d2f3fb8e038eeb4ebcdb9b8c19dcfff5456689b3))
+
 ## [9.6.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.5.0...v9.6.0) (2026-10-27)
 
 
