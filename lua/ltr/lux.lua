@@ -56,9 +56,11 @@ function Lux.add_test(dependency, extra_lux_args)
 end
 
 ---@param extra_lux_args string|nil
+---@param version string|nil
 ---@return string
-function Lux.generate_rockspec(extra_lux_args)
-  return 'lx --no-luarc ' .. lux_args_prefix(extra_lux_args) .. 'generate-rockspec --output-format json'
+function Lux.generate_rockspec(extra_lux_args, version)
+  local version_arg = version and version ~= '' and (' --version=' .. version) or ''
+  return 'lx --no-luarc ' .. lux_args_prefix(extra_lux_args) .. 'generate-rockspec --output-format json' .. version_arg
 end
 
 ---@param sign_protocol string|nil
