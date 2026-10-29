@@ -58,6 +58,17 @@ describe('Lux', function()
     assert.are.same('lx --no-luarc generate-rockspec --output-format json', Lux.generate_rockspec())
   end)
 
+  it('Passes an optional version to generate-rockspec', function()
+    assert.are.same(
+      'lx --no-luarc --lua-version 5.1 generate-rockspec --output-format json --version=1.2.3',
+      Lux.generate_rockspec('--lua-version 5.1', '1.2.3')
+    )
+  end)
+
+  it('Omits an empty generate-rockspec version', function()
+    assert.are.same('lx --no-luarc generate-rockspec --output-format json', Lux.generate_rockspec(nil, ''))
+  end)
+
   it('Injects options into tree commands', function()
     assert.are.same(
       'lx --lua-version 5.4 --tree /tmp/tree install-rockspec foo.rockspec',
