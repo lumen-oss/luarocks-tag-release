@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.9.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.8.0...v9.9.0) (2026-10-29)
+
+
+### Features
+
+* take into account inputs.version when calling generate-rockspec ([#1064](https://github.com/lumen-oss/luarocks-tag-release/issues/1064)) ([e587942](https://github.com/lumen-oss/luarocks-tag-release/commit/e5879423b7c2d5457f6cb2391c099a99e536cb83))
+
 ## [9.8.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.7.0...v9.8.0) (2026-10-28)
 
 
