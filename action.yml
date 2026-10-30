@@ -163,13 +163,18 @@ runs:
 
     - name: Test published package
       if: github.event_name != 'pull_request'
-      run: >-
-        lx --lua-version "${{ inputs.lua_version }}"
-        --tree "$RUNNER_TEMP/lux-tree"
-        exec --no-loader luarocks-tag-release-action.lua test
-        --name "${{ inputs.name }}"
-        --version "${{ inputs.version }}"
-        --extra-luarocks-args "${{ inputs.extra_luarocks_args }}"
-        --extra-lux-args "${{ inputs.extra_lux_args }}"
-        --lua-version "${{ inputs.lua_version }}"
+      run: |
+        version="${{ inputs.version }}"
+        version="${version#v}"
+        if [[ "$version" =~ ^[0-9] ]]; then
+          package+="@$version"
+        fi
+
+        lux_args=()
+        if [[ "$RUNNER_DEBUG" == '1' ]]; then
+          lux_args+=(--verbose)
+        fi
+
+        tree="$(mktemp -d)"
+        lx "${lux_args[@]}" --lua-version "${{ inputs.lua_version }}" --tree "$tree" install "${{ inputs.name }}@$version"
       shell: bash
