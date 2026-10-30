@@ -89,7 +89,7 @@ inputs:
     description: |
       The lux version to install and run.
     required: false
-    default: "0.50.0"
+    default: "0.52.2"
 runs:
   using: "composite"
   steps:
