@@ -304,7 +304,7 @@ Example:
 ### `lux_version` (optional)
 
 The [lux](https://lux.lumen-labs.org/) version installed and run by this action.
-Defaults to `0.52.2`.
+Defaults to `0.53.0`.
 
 Example:
 
