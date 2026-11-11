@@ -2,6 +2,13 @@
 
 # Changelog
 
+## [9.14.1](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.14.0...v9.14.1) (2026-11-11)
+
+
+### Bug Fixes
+
+* pass lua-dir to Lux invocations ([#1087](https://github.com/lumen-oss/luarocks-tag-release/issues/1087)) ([7ce8248](https://github.com/lumen-oss/luarocks-tag-release/commit/7ce8248c0972b80f2019cf53b71984fa9ed050dd))
+
 ## [9.14.0](https://github.com/lumen-oss/luarocks-tag-release/compare/v9.13.0...v9.14.0) (2026-11-06)
 
 
