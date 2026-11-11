@@ -111,6 +111,7 @@ runs:
     - name: Install luarocks-tag-release
       run: |
         lx --lua-version "${{ inputs.lua_version }}" \
+          --lua-dir "$GITHUB_WORKSPACE/.lua" \
           --no-luarc --tree "$RUNNER_TEMP/lux-tree" \
           install --path "${{ github.action_path }}"
         # The action installs itself from its own lux.toml (see the previous step).
@@ -130,6 +131,7 @@ runs:
     - name: Generate rockspec
       run: >-
         lx --lua-version "${{ inputs.lua_version }}"
+        --lua-dir "$GITHUB_WORKSPACE/.lua"
         --tree "$RUNNER_TEMP/lux-tree"
         exec --no-loader luarocks-tag-release-action.lua generate
         --name "${{ inputs.name }}"
@@ -151,6 +153,7 @@ runs:
       if: github.event_name != 'pull_request'
       run: >-
         lx --lua-version "${{ inputs.lua_version }}"
+        --lua-dir "$GITHUB_WORKSPACE/.lua"
         --tree "$RUNNER_TEMP/lux-tree"
         exec --no-loader luarocks-tag-release-action.lua upload
         --extra-luarocks-args "${{ inputs.extra_luarocks_args }}"
@@ -165,6 +168,7 @@ runs:
       if: github.event_name != 'pull_request'
       run: >-
         lx --lua-version "${{ inputs.lua_version }}"
+        --lua-dir "$GITHUB_WORKSPACE/.lua"
         --tree "$RUNNER_TEMP/lux-tree"
         exec --no-loader luarocks-tag-release-action.lua test
         --name "${{ inputs.name }}"
