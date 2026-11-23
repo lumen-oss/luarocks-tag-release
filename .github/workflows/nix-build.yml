@@ -11,7 +11,7 @@ jobs:
     name: Checks
     steps:
       - uses: actions/checkout@v7
-      - uses: cachix/install-nix-action@v30
+      - uses: cachix/install-nix-action@v32
       - name: Nix checks
         run: nix flake check -L
   build:
@@ -26,7 +26,7 @@ jobs:
           - .#devShells.x86_64-linux.default
     steps:
     - uses: actions/checkout@v7
-    - uses: cachix/install-nix-action@v30
+    - uses: cachix/install-nix-action@v32
     - uses: cachix/cachix-action@v17
       with:
         name: lumen-labs
